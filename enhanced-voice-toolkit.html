@@ -1,0 +1,2095 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced OpenAI Voice Toolkit</title>
+    <style>
+        :root {
+            --primary-color: #4a6fa5;
+            --secondary-color: #2a4d7f;
+            --accent-color: #ff7e5f;
+            --accent-secondary: #7986CB;
+            --accent-tertiary: #66BB6A;
+            --light-bg: #f7f9fc;
+            --dark-text: #333;
+            --light-text: #f7f9fc;
+            --border-radius: 8px;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--dark-text);
+            background-color: var(--light-bg);
+            margin: 0;
+            padding: 0;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 1.5rem;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+        
+        h1, h2, h3 {
+            color: var(--primary-color);
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .app-description {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid #e1e4e8;
+        }
+        
+        .tab {
+            padding: 0.8rem 1.5rem;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+        
+        .tab:hover {
+            background-color: var(--light-bg);
+        }
+        
+        .tab.active {
+            border-bottom: 3px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .section {
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            border: 1px solid #e1e4e8;
+            border-radius: var(--border-radius);
+        }
+        
+        .section-title {
+            margin-top: 0;
+            color: var(--secondary-color);
+            font-size: 1.2rem;
+            border-bottom: 1px solid #e1e4e8;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        input[type="text"],
+        input[type="password"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 0.6rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 150px;
+        }
+        
+        .api-section {
+            background-color: #f8f9fa;
+        }
+        
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .control-group {
+            flex: 1;
+            min-width: 180px;
+        }
+        
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.7rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+        
+        button:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        
+        .btn-generate {
+            background-color: var(--accent-color);
+            margin-right: 0.5rem;
+        }
+        
+        .btn-generate:hover {
+            background-color: #ff6347;
+        }
+        
+        .btn-transcribe {
+            background-color: var(--accent-secondary);
+            margin-right: 0.5rem;
+        }
+        
+        .btn-transcribe:hover {
+            background-color: #5C6BC0;
+        }
+        
+        .btn-voiceover {
+            background-color: var(--accent-tertiary);
+            margin-right: 0.5rem;
+        }
+        
+        .btn-voiceover:hover {
+            background-color: #43A047;
+        }
+        
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .status {
+            text-align: center;
+            margin-top: 1rem;
+            font-style: italic;
+            min-height: 1.5rem;
+            padding: 0.5rem;
+        }
+        
+        .error {
+            color: #d9534f;
+        }
+        
+        .success {
+            color: #5cb85c;
+        }
+        
+        .audio-player {
+            width: 100%;
+            margin-top: 1rem;
+            display: none;
+        }
+        
+        .char-counter {
+            text-align: right;
+            font-size: 0.8rem;
+            color: #666;
+        }
+        
+        .voice-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .voice-option {
+            flex: 1;
+            min-width: 100px;
+            text-align: center;
+            padding: 0.5rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .voice-option:hover {
+            background-color: #f0f0f0;
+        }
+        
+        .voice-option.selected {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        .voice-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .voice-name {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .voice-description {
+            font-size: 0.75rem;
+            color: #666;
+        }
+        
+        .storage-options {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+        
+        .file-upload-area {
+            border: 2px dashed #ccc;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            text-align: center;
+            margin-bottom: 1rem;
+            transition: var(--transition);
+        }
+        
+        .file-upload-area:hover {
+            border-color: var(--accent-secondary);
+        }
+        
+        .file-upload-area p {
+            margin: 0.5rem 0;
+            color: #666;
+        }
+        
+        .file-upload-icon {
+            font-size: 2rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        .file-upload-btn {
+            background-color: var(--accent-secondary);
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 4px;
+            cursor: pointer;
+            display: inline-block;
+            transition: var(--transition);
+        }
+        
+        .file-upload-btn:hover {
+            background-color: #5C6BC0;
+        }
+        
+        .selected-file {
+            font-weight: 500;
+            margin-top: 0.5rem;
+        }
+        
+        .progress-bar-container {
+            width: 100%;
+            height: 8px;
+            background-color: #e1e4e8;
+            border-radius: 4px;
+            margin-top: 1rem;
+            overflow: hidden;
+            display: none;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background-color: var(--primary-color);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .timestamps {
+            margin-top: 1rem;
+        }
+        
+        .timestamp-option {
+            margin-right: 1rem;
+        }
+        
+        .transcript-result {
+            background-color: #f9f9f9;
+            border: 1px solid #e1e4e8;
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            margin-top: 1rem;
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            display: none;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 2rem;
+            font-size: 0.8rem;
+            color: #666;
+        }
+        
+        .collapsible {
+            background-color: #f8f9fa;
+            cursor: pointer;
+            padding: 10px;
+            width: 100%;
+            text-align: left;
+            border: none;
+            outline: none;
+            font-size: 15px;
+            font-weight: 500;
+            border-radius: 4px;
+            margin-bottom: 0.5rem;
+        }
+        
+        .collapsible:after {
+            content: '\002B';
+            color: #777;
+            font-weight: bold;
+            float: right;
+            margin-left: 5px;
+        }
+        
+        .collapsible.active:after {
+            content: "\2212";
+        }
+        
+        .collapsible-content {
+            padding: 0 15px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.2s ease-out;
+            background-color: white;
+            border-radius: 0 0 4px 4px;
+        }
+        
+        .slider-container {
+            margin-bottom: 1rem;
+        }
+        
+        .slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 5px;
+            border-radius: 5px;
+            background: #d3d3d3;
+            outline: none;
+            -webkit-transition: .2s;
+            transition: opacity .2s;
+            margin-top: 0.5rem;
+        }
+        
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            cursor: pointer;
+        }
+        
+        .slider::-moz-range-thumb {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            cursor: pointer;
+        }
+        
+        .slider-value {
+            text-align: right;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .style-presets {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .style-preset {
+            flex: 1;
+            min-width: 120px;
+            text-align: center;
+            padding: 0.5rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .style-preset:hover {
+            background-color: #f0f0f0;
+        }
+        
+        .style-preset.selected {
+            background-color: var(--accent-secondary);
+            color: white;
+            border-color: var(--accent-secondary);
+        }
+        
+        .video-preview {
+            width: 100%;
+            max-height: 300px;
+            display: none;
+            margin-top: 1rem;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+        
+        .preview-container {
+            position: relative;
+            width: 100%;
+            margin-top: 1rem;
+        }
+        
+        .preview-container video, .preview-container canvas {
+            width: 100%;
+            max-height: 300px;
+            border-radius: var(--border-radius);
+            display: none;
+        }
+        
+        .preview-frames {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            justify-content: center;
+        }
+        
+        .preview-frame {
+            width: 80px;
+            height: 45px;
+            object-fit: cover;
+            border-radius: 4px;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+        
+        .preview-frame.selected {
+            border-color: var(--accent-color);
+        }
+        
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+            margin-right: 8px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .toggle-slider {
+            background-color: var(--primary-color);
+        }
+        
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+        
+        .toggle-label {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .toggle-text {
+            font-size: 0.9rem;
+        }
+        
+        .chips-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .chip {
+            background-color: #f0f0f0;
+            padding: 0.3rem 0.8rem;
+            border-radius: 16px;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+        }
+        
+        .chip-remove {
+            margin-left: 0.5rem;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 768px) {
+            .controls {
+                flex-direction: column;
+            }
+            
+            .control-group {
+                width: 100%;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .tab {
+                text-align: center;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            button {
+                width: 100%;
+                margin-right: 0 !important;
+                margin-bottom: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Enhanced OpenAI Voice Toolkit</h1>
+        <p class="app-description">Create natural speech, transcribe audio, and generate video narrations with OpenAI's advanced AI voice technologies</p>
+        
+        <div class="section api-section">
+            <h2 class="section-title">API Configuration</h2>
+            <label for="api-key">OpenAI API Key:</label>
+            <input type="password" id="api-key" placeholder="Enter your OpenAI API key">
+            <div class="storage-options">
+                <input type="checkbox" id="remember-key">
+                <label for="remember-key" style="display: inline;">Remember my API key on this device</label>
+                <p style="font-size: 0.8rem; color: #666; margin-top: 0.25rem;">
+                    Your key will be stored securely in your browser's local storage.
+                </p>
+            </div>
+        </div>
+        
+        <div class="tabs">
+            <div class="tab active" data-tab="tts">Text to Speech</div>
+            <div class="tab" data-tab="advanced-tts">Advanced TTS</div>
+            <div class="tab" data-tab="stt">Speech to Text</div>
+            <div class="tab" data-tab="video">Video Voiceover</div>
+        </div>
+        
+        <!-- Basic Text to Speech Tab -->
+        <div id="tts-tab" class="tab-content active">
+            <div class="section">
+                <h2 class="section-title">Text Input</h2>
+                <textarea id="tts-text-input" placeholder="Type or paste your text here. It will be converted to speech."></textarea>
+                <div class="char-counter"><span id="tts-char-count">0</span> characters</div>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title">Voice Selection</h2>
+                <div class="voice-options">
+                    <div class="voice-option" data-voice="alloy">
+                        <div class="voice-icon">🔊</div>
+                        <div class="voice-name">Alloy</div>
+                        <div class="voice-description">Neutral & balanced</div>
+                    </div>
+                    <div class="voice-option" data-voice="echo">
+                        <div class="voice-icon">🔊</div>
+                        <div class="voice-name">Echo</div>
+                        <div class="voice-description">Deep & robust</div>
+                    </div>
+                    <div class="voice-option" data-voice="fable">
+                        <div class="voice-icon">🔊</div>
+                        <div class="voice-name">Fable</div>
+                        <div class="voice-description">Warm & narration</div>
+                    </div>
+                    <div class="voice-option" data-voice="onyx">
+                        <div class="voice-icon">🔊</div>
+                        <div class="voice-name">Onyx</div>
+                        <div class="voice-description">Authoritative</div>
+                    </div>
+                    <div class="voice-option" data-voice="nova">
+                        <div class="voice-icon">🔊</div>
+                        <div class="voice-name">Nova</div>
+                        <div class="voice-description">Friendly & bright</div>
+                    </div>
+                    <div class="voice-option" data-voice="shimmer">
+                        <div class="voice-icon">🔊</div>
+                        <div class="voice-name">Shimmer</div>
+                        <div class="voice-description">Clear & melodic</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title">Output Options</h2>
+                <div class="controls">
+                    <div class="control-group">
+                        <label for="tts-filename">Save as:</label>
+                        <input type="text" id="tts-filename" value="speech.mp3">
+                    </div>
+                    <div class="control-group">
+                        <label for="tts-format">Audio Format:</label>
+                        <select id="tts-format">
+                            <option value="mp3">MP3</option>
+                            <option value="wav">WAV</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="button-group">
+                <button id="tts-generate-btn" class="btn-generate">Generate Speech</button>
+                <button id="tts-play-btn" disabled>Play</button>
+                <button id="tts-download-btn" disabled>Download</button>
+            </div>
+            
+            <div class="status" id="tts-status-message"></div>
+            
+            <audio id="tts-audio-player" class="audio-player" controls></audio>
+        </div>
+        
+        <!-- Advanced Text to Speech Tab -->
+        <div id="advanced-tts-tab" class="tab-content">
+            <div class="section">
+                <h2 class="section-title">Text Input</h2>
+                <textarea id="advanced-tts-text-input" placeholder="Type or paste your text here. It will be converted to speech with custom styling."></textarea>
+                <div class="char-counter"><span id="advanced-tts-char-count">0</span> characters</div>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title">Voice Selection</h2>
+                <div class="voice-options">
+                    <div class="voice-option" data-voice="alloy">
+                        <div class="voice-icon">🔊</div>
+                        <div class="voice-name">Alloy</div>
+                        <div class="voice-description">Neutral & balanced</div>
+                    </div>
+                    <div class="voice-option" data-voice="echo">
+                        <div class="voice-icon">🔊</div>
+                        <div class="voice-name">Echo</div>
+                        <div class="voice-description">Deep & robust</div>
+                    </div>
+                    <div class="voice-option" data-voice="fable">
+                        <div class="voice-icon">🔊</div>
+                        <div class="voice-name">Fable</div>
+                        <div class="voice-description">Warm & narration</div>
+                    </div>
+                    <div class="voice-option" data-voice="onyx">
+                        <div class="voice-icon">🔊</div>
+                        <div class="voice-name">Onyx</div>
+                        <div class="voice-description">Authoritative</div>
+                    </div>
+                    <div class="voice-option" data-voice="nova">
+                        <div class="voice-icon">🔊</div>
+                        <div class="voice-name">Nova</div>
+                        <div class="voice-description">Friendly & bright</div>
+                    </div>
+                    <div class="voice-option" data-voice="shimmer">
+                        <div class="voice-icon">🔊</div>
+                        <div class="voice-name">Shimmer</div>
+                        <div class="voice-description">Clear & melodic</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title">Voice Styling</h2>
+                
+                <button type="button" class="collapsible">Style Presets</button>
+                <div class="collapsible-content">
+                    <div class="style-presets">
+                        <div class="style-preset" data-preset="british-narrator">
+                            <div class="voice-name">British Narrator</div>
+                            <div class="voice-description">David Attenborough style</div>
+                        </div>
+                        <div class="style-preset" data-preset="news-anchor">
+                            <div class="voice-name">News Anchor</div>
+                            <div class="voice-description">Professional & clear</div>
+                        </div>
+                        <div class="style-preset" data-preset="storyteller">
+                            <div class="voice-name">Storyteller</div>
+                            <div class="voice-description">Engaging & expressive</div>
+                        </div>
+                        <div class="style-preset" data-preset="teacher">
+                            <div class="voice-name">Teacher</div>
+                            <div class="voice-description">Clear & educational</div>
+                        </div>
+                        <div class="style-preset" data-preset="excited">
+                            <div class="voice-name">Excited</div>
+                            <div class="voice-description">Energetic & enthusiastic</div>
+                        </div>
+                        <div class="style-preset" data-preset="calm">
+                            <div class="voice-name">Calm</div>
+                            <div class="voice-description">Soothing & peaceful</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <button type="button" class="collapsible">Accent & Language</button>
+                <div class="collapsible-content">
+                    <div class="control-group">
+                        <label for="accent-select">Select Accent:</label>
+                        <select id="accent-select">
+                            <option value="neutral">Neutral</option>
+                            <option value="american">American</option>
+                            <option value="british">British</option>
+                            <option value="australian">Australian</option>
+                            <option value="indian">Indian</option>
+                            <option value="irish">Irish</option>
+                            <option value="scottish">Scottish</option>
+                            <option value="south-african">South African</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <button type="button" class="collapsible">Speed & Tone</button>
+                <div class="collapsible-content">
+                    <div class="slider-container">
+                        <label for="speed-slider">Speaking Speed:</label>
+                        <input type="range" min="0.5" max="2" value="1" step="0.1" class="slider" id="speed-slider">
+                        <div class="slider-value"><span id="speed-value">1.0</span>x</div>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label for="tone-select">Voice Tone:</label>
+                        <select id="tone-select">
+                            <option value="neutral">Neutral</option>
+                            <option value="formal">Formal</option>
+                            <option value="friendly">Friendly</option>
+                            <option value="professional">Professional</option>
+                            <option value="enthusiastic">Enthusiastic</option>
+                            <option value="serious">Serious</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <button type="button" class="collapsible">Custom Instructions</button>
+                <div class="collapsible-content">
+                    <div class="control-group">
+                        <label for="custom-instructions">Detailed Voice Instructions:</label>
+                        <textarea id="custom-instructions" placeholder="Example: Speak in a calm, gentle tone with slight pauses between sentences. Emphasize important words and use a slightly higher pitch for questions." rows="3"></textarea>
+                    </div>
+                </div>
+                
+                <div class="control-group">
+                    <label for="advanced-tts-model">TTS Model:</label>
+                    <select id="advanced-tts-model">
+                        <option value="tts-1">TTS-1 (Standard)</option>
+                        <option value="tts-1-hd">TTS-1-HD (High Definition)</option>
+                        <option value="gpt-4o-audio-preview">GPT-4o Audio (Advanced Styling)</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title">Output Options</h2>
+                <div class="controls">
+                    <div class="control-group">
+                        <label for="advanced-tts-filename">Save as:</label>
+                        <input type="text" id="advanced-tts-filename" value="styled_speech.mp3">
+                    </div>
+                    <div class="control-group">
+                        <label for="advanced-tts-format">Audio Format:</label>
+                        <select id="advanced-tts-format">
+                            <option value="mp3">MP3</option>
+                            <option value="wav">WAV</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="button-group">
+                <button id="advanced-tts-generate-btn" class="btn-generate">Generate Styled Speech</button>
+                <button id="advanced-tts-play-btn" disabled>Play</button>
+                <button id="advanced-tts-download-btn" disabled>Download</button>
+            </div>
+            
+            <div class="status" id="advanced-tts-status-message"></div>
+            
+            <audio id="advanced-tts-audio-player" class="audio-player" controls></audio>
+        </div>
+        
+        <!-- Speech to Text Tab -->
+        <div id="stt-tab" class="tab-content">
+            <div class="section">
+                <h2 class="section-title">Audio Upload</h2>
+                <div class="file-upload-area" id="stt-upload-area">
+                    <div class="file-upload-icon">📁</div>
+                    <p>Drag & drop your audio file here or</p>
+                    <label for="stt-file-input" class="file-upload-btn">Select File</label>
+                    <input type="file" id="stt-file-input" class="file-input" accept=".mp3,.mp4,.mpeg,.mpga,.m4a,.wav,.webm">
+                    <p class="selected-file" id="stt-selected-file">No file selected</p>
+                    <p style="font-size: 0.8rem; color: #666;">
+                        Supported formats: mp3, mp4, mpeg, mpga, m4a, wav, webm (max 25MB)
+                    </p>
+                </div>
+                <div class="progress-bar-container" id="stt-progress-container">
+                    <div class="progress-bar" id="stt-progress-bar"></div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title">Transcription Options</h2>
+                <div class="controls">
+                    <div class="control-group">
+                        <label for="stt-type">Process Type:</label>
+                        <select id="stt-type">
+                            <option value="transcription">Transcribe (original language)</option>
+                            <option value="translation">Translate to English</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label for="stt-format">Output Format:</label>
+                        <select id="stt-format">
+                            <option value="text">Plain Text</option>
+                            <option value="json">JSON</option>
+                            <option value="verbose_json">Verbose JSON (with timestamps)</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="timestamps">
+                    <p style="margin-bottom: 0.5rem;">Timestamp Granularity (for Verbose JSON):</p>
+                    <label class="timestamp-option">
+                        <input type="checkbox" id="stt-timestamp-segment"> Segment Level
+                    </label>
+                    <label class="timestamp-option">
+                        <input type="checkbox" id="stt-timestamp-word"> Word Level
+                    </label>
+                </div>
+                
+                <div class="control-group" style="margin-top: 1rem;">
+                    <label for="stt-prompt">Optional Prompt (helps with specific terms or formatting):</label>
+                    <textarea id="stt-prompt" placeholder="Example: Proper names to recognize correctly, or formatting preferences..." rows="2"></textarea>
+                </div>
+            </div>
+            
+            <div class="button-group">
+                <button id="stt-transcribe-btn" class="btn-transcribe" disabled>Transcribe Audio</button>
+                <button id="stt-copy-btn" disabled>Copy to Clipboard</button>
+                <button id="stt-save-btn" disabled>Save as Text File</button>
+            </div>
+            
+            <div class="status" id="stt-status-message"></div>
+            
+            <pre id="stt-transcript" class="transcript-result"></pre>
+        </div>
+        
+        <!-- Video Voiceover Tab -->
+        <div id="video-tab" class="tab-content">
+            <div class="section">
+                <h2 class="section-title">Video Upload</h2>
+                <div class="file-upload-area" id="video-upload-area">
+                    <div class="file-upload-icon">🎬</div>
+                    <p>Drag & drop your video file here or</p>
+                    <label for="video-file-input" class="file-upload-btn">Select Video</label>
+                    <input type="file" id="video-file-input" class="file-input" accept="video/*">
+                    <p class="selected-file" id="video-selected-file">No file selected</p>
+                    <p style="font-size: 0.8rem; color: #666;">
+                        Supported formats: mp4, mov, avi, webm (max 100MB)
+                    </p>
+                </div>
+                <div class="progress-bar-container" id="video-progress-container">
+                    <div class="progress-bar" id="video-progress-bar"></div>
+                </div>
+            </div>
+            
+            <div class="preview-container">
+                <video id="video-preview" controls class="video-preview"></video>
+                <canvas id="video-canvas" style="display: none;"></canvas>
+                <div class="preview-frames" id="video-frames"></div>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title">Voiceover Options</h2>
+                
+                <div class="toggle-label">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="auto-script-toggle" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                    <span class="toggle-text">Auto-generate script from video content</span>
+                </div>
+                
+                <div class="control-group">
+                    <label for="script-style">Script Style:</label>
+                    <select id="script-style">
+                        <option value="descriptive">Descriptive (scene details)</option>
+                        <option value="narrative">Narrative (storytelling)</option>
+                        <option value="educational">Educational (explanatory)</option>
+                        <option value="documentary">Documentary (David Attenborough style)</option>
+                        <option value="minimal">Minimal (key points only)</option>
+                    </select>
+                </div>
+                
+                <div class="control-group">
+                    <label for="video-script">Script (auto-generated or custom):</label>
+                    <textarea id="video-script" placeholder="Auto-generated script will appear here, or you can write your own custom script." rows="6"></textarea>
+                </div>
+                
+                <div class="control-group">
+                    <label for="video-voice">Voice Selection:</label>
+                    <select id="video-voice">
+                        <option value="alloy">Alloy (Neutral & balanced)</option>
+                        <option value="echo">Echo (Deep & robust)</option>
+                        <option value="fable">Fable (Warm & narration)</option>
+                        <option value="onyx">Onyx (Authoritative)</option>
+                        <option value="nova">Nova (Friendly & bright)</option>
+                        <option value="shimmer">Shimmer (Clear & melodic)</option>
+                    </select>
+                </div>
+                
+                <button type="button" class="collapsible">Advanced Voice Styling</button>
+                <div class="collapsible-content">
+                    <div class="control-group">
+                        <label for="video-accent">Accent:</label>
+                        <select id="video-accent">
+                            <option value="neutral">Neutral</option>
+                            <option value="british">British</option>
+                            <option value="american">American</option>
+                            <option value="australian">Australian</option>
+                        </select>
+                    </div>
+                    
+                    <div class="slider-container">
+                        <label for="video-speed-slider">Speaking Speed:</label>
+                        <input type="range" min="0.5" max="2" value="1" step="0.1" class="slider" id="video-speed-slider">
+                        <div class="slider-value"><span id="video-speed-value">1.0</span>x</div>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label for="video-tone">Tone:</label>
+                        <select id="video-tone">
+                            <option value="neutral">Neutral</option>
+                            <option value="professional">Professional</option>
+                            <option value="enthusiastic">Enthusiastic</option>
+                            <option value="serious">Serious</option>
+                            <option value="friendly">Friendly</option>
+                        </select>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label for="video-custom-instructions">Custom Instructions:</label>
+                        <textarea id="video-custom-instructions" placeholder="Example: Speak with a sense of wonder and curiosity, emphasizing descriptions of nature." rows="2"></textarea>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title">Output Options</h2>
+                <div class="controls">
+                    <div class="control-group">
+                        <label for="video-output-filename">Save Audio As:</label>
+                        <input type="text" id="video-output-filename" value="video_narration.mp3">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="button-group">
+                <button id="video-generate-script-btn" class="btn-transcribe">Generate Script</button>
+                <button id="video-generate-audio-btn" class="btn-voiceover">Generate Voiceover</button>
+                <button id="video-play-btn" disabled>Play Audio</button>
+                <button id="video-download-btn" disabled>Download Audio</button>
+            </div>
+            
+            <div class="status" id="video-status-message"></div>
+            
+            <audio id="video-audio-player" class="audio-player" controls></audio>
+        </div>
+        
+        <div class="footer">
+            <p>This application uses OpenAI's advanced voice and vision technologies including Text-to-Speech, Speech-to-Text and GPT-4o.</p>
+            <p>Your API key is required and standard API usage rates apply.</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Tab Switching
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabId = this.getAttribute('data-tab');
+                    
+                    // Update active tab
+                    tabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Update active content
+                    tabContents.forEach(content => {
+                        content.classList.remove('active');
+                        if (content.id === `${tabId}-tab`) {
+                            content.classList.add('active');
+                        }
+                    });
+                });
+            });
+            
+            // Collapsible sections
+            const collapsibles = document.querySelectorAll('.collapsible');
+            
+            collapsibles.forEach(coll => {
+                coll.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                    const content = this.nextElementSibling;
+                    if (content.style.maxHeight) {
+                        content.style.maxHeight = null;
+                    } else {
+                        content.style.maxHeight = content.scrollHeight + "px";
+                    }
+                });
+            });
+            
+            // API Key Management
+            const apiKeyInput = document.getElementById('api-key');
+            const rememberKeyCheckbox = document.getElementById('remember-key');
+            
+            // Check for saved API key
+            if (localStorage.getItem('openai_api_key')) {
+                apiKeyInput.value = localStorage.getItem('openai_api_key');
+                rememberKeyCheckbox.checked = true;
+            }
+            
+            // Basic TTS Elements
+            const ttsTextInput = document.getElementById('tts-text-input');
+            const ttsCharCount = document.getElementById('tts-char-count');
+            const voiceOptions = document.querySelectorAll('#tts-tab .voice-option');
+            const ttsFilenameInput = document.getElementById('tts-filename');
+            const ttsFormatSelect = document.getElementById('tts-format');
+            const ttsGenerateBtn = document.getElementById('tts-generate-btn');
+            const ttsPlayBtn = document.getElementById('tts-play-btn');
+            const ttsDownloadBtn = document.getElementById('tts-download-btn');
+            const ttsStatusMessage = document.getElementById('tts-status-message');
+            const ttsAudioPlayer = document.getElementById('tts-audio-player');
+            
+            // Advanced TTS Elements
+            const advancedTtsTextInput = document.getElementById('advanced-tts-text-input');
+            const advancedTtsCharCount = document.getElementById('advanced-tts-char-count');
+            const advancedVoiceOptions = document.querySelectorAll('#advanced-tts-tab .voice-option');
+            const stylePresets = document.querySelectorAll('.style-preset');
+            const accentSelect = document.getElementById('accent-select');
+            const speedSlider = document.getElementById('speed-slider');
+            const speedValue = document.getElementById('speed-value');
+            const toneSelect = document.getElementById('tone-select');
+            const customInstructions = document.getElementById('custom-instructions');
+            const advancedTtsModel = document.getElementById('advanced-tts-model');
+            const advancedTtsFilenameInput = document.getElementById('advanced-tts-filename');
+            const advancedTtsFormatSelect = document.getElementById('advanced-tts-format');
+            const advancedTtsGenerateBtn = document.getElementById('advanced-tts-generate-btn');
+            const advancedTtsPlayBtn = document.getElementById('advanced-tts-play-btn');
+            const advancedTtsDownloadBtn = document.getElementById('advanced-tts-download-btn');
+            const advancedTtsStatusMessage = document.getElementById('advanced-tts-status-message');
+            const advancedTtsAudioPlayer = document.getElementById('advanced-tts-audio-player');
+            
+            // Speech-to-Text Elements
+            const sttFileInput = document.getElementById('stt-file-input');
+            const sttSelectedFile = document.getElementById('stt-selected-file');
+            const sttUploadArea = document.getElementById('stt-upload-area');
+            const sttProgressContainer = document.getElementById('stt-progress-container');
+            const sttProgressBar = document.getElementById('stt-progress-bar');
+            const sttType = document.getElementById('stt-type');
+            const sttFormat = document.getElementById('stt-format');
+            const sttTimestampSegment = document.getElementById('stt-timestamp-segment');
+            const sttTimestampWord = document.getElementById('stt-timestamp-word');
+            const sttPrompt = document.getElementById('stt-prompt');
+            const sttTranscribeBtn = document.getElementById('stt-transcribe-btn');
+            const sttCopyBtn = document.getElementById('stt-copy-btn');
+            const sttSaveBtn = document.getElementById('stt-save-btn');
+            const sttStatusMessage = document.getElementById('stt-status-message');
+            const sttTranscript = document.getElementById('stt-transcript');
+            
+            // Video Voiceover Elements
+            const videoFileInput = document.getElementById('video-file-input');
+            const videoSelectedFile = document.getElementById('video-selected-file');
+            const videoUploadArea = document.getElementById('video-upload-area');
+            const videoProgressContainer = document.getElementById('video-progress-container');
+            const videoProgressBar = document.getElementById('video-progress-bar');
+            const videoPreview = document.getElementById('video-preview');
+            const videoCanvas = document.getElementById('video-canvas');
+            const videoFrames = document.getElementById('video-frames');
+            const autoScriptToggle = document.getElementById('auto-script-toggle');
+            const scriptStyle = document.getElementById('script-style');
+            const videoScript = document.getElementById('video-script');
+            const videoVoice = document.getElementById('video-voice');
+            const videoAccent = document.getElementById('video-accent');
+            const videoSpeedSlider = document.getElementById('video-speed-slider');
+            const videoSpeedValue = document.getElementById('video-speed-value');
+            const videoTone = document.getElementById('video-tone');
+            const videoCustomInstructions = document.getElementById('video-custom-instructions');
+            const videoOutputFilename = document.getElementById('video-output-filename');
+            const videoGenerateScriptBtn = document.getElementById('video-generate-script-btn');
+            const videoGenerateAudioBtn = document.getElementById('video-generate-audio-btn');
+            const videoPlayBtn = document.getElementById('video-play-btn');
+            const videoDownloadBtn = document.getElementById('video-download-btn');
+            const videoStatusMessage = document.getElementById('video-status-message');
+            const videoAudioPlayer = document.getElementById('video-audio-player');
+            
+            // Variables
+            let selectedVoice = 'alloy';
+            let advancedSelectedVoice = 'alloy';
+            let selectedStylePreset = '';
+            let ttsAudioBlob = null;
+            let advancedTtsAudioBlob = null;
+            let sttAudioFile = null;
+            let videoFile = null;
+            let videoAudioBlob = null;
+            let extractedFrames = [];
+            
+            // Basic TTS - Character counter
+            ttsTextInput.addEventListener('input', function() {
+                const text = this.value;
+                ttsCharCount.textContent = text.length;
+            });
+            
+            // Advanced TTS - Character counter
+            advancedTtsTextInput.addEventListener('input', function() {
+                const text = this.value;
+                advancedTtsCharCount.textContent = text.length;
+            });
+            
+            // Basic TTS - Voice selection
+            voiceOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    voiceOptions.forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                    selectedVoice = this.getAttribute('data-voice');
+                });
+            });
+            
+            // Advanced TTS - Voice selection
+            advancedVoiceOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    advancedVoiceOptions.forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                    advancedSelectedVoice = this.getAttribute('data-voice');
+                });
+            });
+            
+            // Style presets
+            stylePresets.forEach(preset => {
+                preset.addEventListener('click', function() {
+                    stylePresets.forEach(p => p.classList.remove('selected'));
+                    this.classList.add('selected');
+                    selectedStylePreset = this.getAttribute('data-preset');
+                    
+                    // Set corresponding values based on preset
+                    switch(selectedStylePreset) {
+                        case 'british-narrator':
+                            accentSelect.value = 'british';
+                            speedSlider.value = 0.9;
+                            speedValue.textContent = '0.9';
+                            toneSelect.value = 'serious';
+                            customInstructions.value = 'Speak in a deep, authoritative voice like David Attenborough. Use dramatic pauses and emphasize descriptive words.';
+                            break;
+                        case 'news-anchor':
+                            accentSelect.value = 'american';
+                            speedSlider.value = 1.1;
+                            speedValue.textContent = '1.1';
+                            toneSelect.value = 'professional';
+                            customInstructions.value = 'Speak clearly and professionally with a neutral tone. Emphasize important facts and maintain a steady pace.';
+                            break;
+                        case 'storyteller':
+                            accentSelect.value = 'neutral';
+                            speedSlider.value = 0.9;
+                            speedValue.textContent = '0.9';
+                            toneSelect.value = 'friendly';
+                            customInstructions.value = 'Speak with warmth and variation in tone. Add drama to exciting parts and slow down for important moments.';
+                            break;
+                        case 'teacher':
+                            accentSelect.value = 'neutral';
+                            speedSlider.value = 0.9;
+                            speedValue.textContent = '0.9';
+                            toneSelect.value = 'friendly';
+                            customInstructions.value = 'Speak clearly and at a measured pace. Emphasize key terms and use a slightly higher pitch for questions.';
+                            break;
+                        case 'excited':
+                            accentSelect.value = 'american';
+                            speedSlider.value = 1.3;
+                            speedValue.textContent = '1.3';
+                            toneSelect.value = 'enthusiastic';
+                            customInstructions.value = 'Speak with high energy and enthusiasm. Use upward inflections and emphasize exciting words.';
+                            break;
+                        case 'calm':
+                            accentSelect.value = 'neutral';
+                            speedSlider.value = 0.8;
+                            speedValue.textContent = '0.8';
+                            toneSelect.value = 'serious';
+                            customInstructions.value = 'Speak in a soothing, calming voice. Use a lower pitch and speak slowly with gentle transitions between sentences.';
+                            break;
+                    }
+                });
+            });
+            
+            // Speed slider
+            speedSlider.addEventListener('input', function() {
+                speedValue.textContent = this.value;
+            });
+            
+            // Video speed slider
+            videoSpeedSlider.addEventListener('input', function() {
+                videoSpeedValue.textContent = this.value;
+            });
+            
+            // Set default voices
+            document.querySelector('#tts-tab .voice-option[data-voice="alloy"]').classList.add('selected');
+            document.querySelector('#advanced-tts-tab .voice-option[data-voice="alloy"]').classList.add('selected');
+            
+            // Format change updates filename extension
+            ttsFormatSelect.addEventListener('change', function() {
+                const filename = ttsFilenameInput.value;
+                const baseName = filename.split('.')[0];
+                ttsFilenameInput.value = `${baseName}.${this.value}`;
+            });
+            
+            advancedTtsFormatSelect.addEventListener('change', function() {
+                const filename = advancedTtsFilenameInput.value;
+                const baseName = filename.split('.')[0];
+                advancedTtsFilenameInput.value = `${baseName}.${this.value}`;
+            });
+            
+            // Basic TTS - Generate speech
+            ttsGenerateBtn.addEventListener('click', function() {
+                const apiKey = apiKeyInput.value.trim();
+                const text = ttsTextInput.value.trim();
+                
+                // Validation
+                if (!apiKey) {
+                    showStatus(ttsStatusMessage, 'Please enter your OpenAI API key', 'error');
+                    return;
+                }
+                
+                if (!text) {
+                    showStatus(ttsStatusMessage, 'Please enter some text to convert', 'error');
+                    return;
+                }
+                
+                // Remember API key if checkbox is checked
+                if (rememberKeyCheckbox.checked) {
+                    localStorage.setItem('openai_api_key', apiKey);
+                } else {
+                    localStorage.removeItem('openai_api_key');
+                }
+                
+                // Mock API call for demo purposes
+                // In a real implementation, this would make an actual API call to OpenAI
+                showStatus(ttsStatusMessage, 'Generating speech... please wait', '');
+                ttsGenerateBtn.disabled = true;
+                
+                // Simulate API delay
+                setTimeout(() => {
+                    // Create a mock audio blob (in real implementation, this would be the API response)
+                    mockGenerateAudio(text, selectedVoice)
+                        .then(blob => {
+                            ttsAudioBlob = blob;
+                            const audioUrl = URL.createObjectURL(blob);
+                            ttsAudioPlayer.src = audioUrl;
+                            ttsAudioPlayer.style.display = 'block';
+                            
+                            showStatus(ttsStatusMessage, 'Speech generated successfully!', 'success');
+                            ttsPlayBtn.disabled = false;
+                            ttsDownloadBtn.disabled = false;
+                            ttsGenerateBtn.disabled = false;
+                        })
+                        .catch(error => {
+                            showStatus(ttsStatusMessage, `Error: ${error.message}`, 'error');
+                            ttsGenerateBtn.disabled = false;
+                        });
+                }, 1500);
+            });
+            
+            // Advanced TTS - Generate speech
+            advancedTtsGenerateBtn.addEventListener('click', function() {
+                const apiKey = apiKeyInput.value.trim();
+                const text = advancedTtsTextInput.value.trim();
+                const model = advancedTtsModel.value;
+                const accent = accentSelect.value;
+                const speed = speedSlider.value;
+                const tone = toneSelect.value;
+                const instructions = customInstructions.value.trim();
+                
+                // Validation
+                if (!apiKey) {
+                    showStatus(advancedTtsStatusMessage, 'Please enter your OpenAI API key', 'error');
+                    return;
+                }
+                
+                if (!text) {
+                    showStatus(advancedTtsStatusMessage, 'Please enter some text to convert', 'error');
+                    return;
+                }
+                
+                // Remember API key if checkbox is checked
+                if (rememberKeyCheckbox.checked) {
+                    localStorage.setItem('openai_api_key', apiKey);
+                } else {
+                    localStorage.removeItem('openai_api_key');
+                }
+                
+                // Compose system instructions based on user selections
+                let systemInstructions = `You are a helpful assistant that can generate audio from text.`;
+                
+                if (accent !== 'neutral') {
+                    systemInstructions += ` Speak with a ${accent} accent.`;
+                }
+                
+                if (speed !== '1') {
+                    if (speed < 1) {
+                        systemInstructions += ` Speak slower than normal.`;
+                    } else {
+                        systemInstructions += ` Speak faster than normal.`;
+                    }
+                }
+                
+                if (tone !== 'neutral') {
+                    systemInstructions += ` Use a ${tone} tone.`;
+                }
+                
+                if (instructions) {
+                    systemInstructions += ` ${instructions}`;
+                }
+                
+                showStatus(advancedTtsStatusMessage, 'Generating styled speech... please wait', '');
+                advancedTtsGenerateBtn.disabled = true;
+                
+                // Simulate API delay (longer for advanced processing)
+                setTimeout(() => {
+                    // Create a mock audio blob (in real implementation, this would be the API response)
+                    mockGenerateStyledAudio(text, advancedSelectedVoice, systemInstructions, model)
+                        .then(blob => {
+                            advancedTtsAudioBlob = blob;
+                            const audioUrl = URL.createObjectURL(blob);
+                            advancedTtsAudioPlayer.src = audioUrl;
+                            advancedTtsAudioPlayer.style.display = 'block';
+                            
+                            showStatus(advancedTtsStatusMessage, 'Styled speech generated successfully!', 'success');
+                            advancedTtsPlayBtn.disabled = false;
+                            advancedTtsDownloadBtn.disabled = false;
+                            advancedTtsGenerateBtn.disabled = false;
+                        })
+                        .catch(error => {
+                            showStatus(advancedTtsStatusMessage, `Error: ${error.message}`, 'error');
+                            advancedTtsGenerateBtn.disabled = false;
+                        });
+                }, 2500);
+            });
+            
+            // Basic TTS - Play button
+            ttsPlayBtn.addEventListener('click', function() {
+                ttsAudioPlayer.play();
+            });
+            
+            // Advanced TTS - Play button
+            advancedTtsPlayBtn.addEventListener('click', function() {
+                advancedTtsAudioPlayer.play();
+            });
+            
+            // Basic TTS - Download button
+            ttsDownloadBtn.addEventListener('click', function() {
+                if (ttsAudioBlob) {
+                    const downloadLink = document.createElement('a');
+                    downloadLink.href = URL.createObjectURL(ttsAudioBlob);
+                    downloadLink.download = ttsFilenameInput.value;
+                    document.body.appendChild(downloadLink);
+                    downloadLink.click();
+                    document.body.removeChild(downloadLink);
+                }
+            });
+            
+            // Advanced TTS - Download button
+            advancedTtsDownloadBtn.addEventListener('click', function() {
+                if (advancedTtsAudioBlob) {
+                    const downloadLink = document.createElement('a');
+                    downloadLink.href = URL.createObjectURL(advancedTtsAudioBlob);
+                    downloadLink.download = advancedTtsFilenameInput.value;
+                    document.body.appendChild(downloadLink);
+                    downloadLink.click();
+                    document.body.removeChild(downloadLink);
+                }
+            });
+            
+            // STT - File selection
+            sttFileInput.addEventListener('change', function(e) {
+                if (this.files.length > 0) {
+                    sttAudioFile = this.files[0];
+                    sttSelectedFile.textContent = `Selected: ${sttAudioFile.name}`;
+                    
+                    // Check file size (25MB limit)
+                    if (sttAudioFile.size > 26214400) {
+                        showStatus(sttStatusMessage, 'Error: File exceeds 25MB limit', 'error');
+                        sttTranscribeBtn.disabled = true;
+                    } else {
+                        showStatus(sttStatusMessage, `File ready: ${sttAudioFile.name}`, 'success');
+                        sttTranscribeBtn.disabled = false;
+                    }
+                }
+            });
+            
+            // Video - File selection
+            videoFileInput.addEventListener('change', function(e) {
+                if (this.files.length > 0) {
+                    videoFile = this.files[0];
+                    videoSelectedFile.textContent = `Selected: ${videoFile.name}`;
+                    
+                    // Check file size (100MB limit)
+                    if (videoFile.size > 104857600) {
+                        showStatus(videoStatusMessage, 'Error: File exceeds 100MB limit', 'error');
+                    } else {
+                        showStatus(videoStatusMessage, `File ready: ${videoFile.name}`, 'success');
+                        
+                        // Display video preview
+                        const videoURL = URL.createObjectURL(videoFile);
+                        videoPreview.src = videoURL;
+                        videoPreview.style.display = 'block';
+                        
+                        // Extract frames when video is loaded
+                        videoPreview.onloadeddata = function() {
+                            extractVideoFrames(videoPreview);
+                        };
+                    }
+                }
+            });
+            
+            // STT - Drag and drop
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                sttUploadArea.addEventListener(eventName, highlight, false);
+                videoUploadArea.addEventListener(eventName, highlight, false);
+            });
+            
+            ['dragleave', 'drop'].forEach(eventName => {
+                sttUploadArea.addEventListener(eventName, unhighlight, false);
+                videoUploadArea.addEventListener(eventName, unhighlight, false);
+            });
+            
+            function highlight() {
+                this.style.borderColor = '#7986CB';
+                this.style.backgroundColor = '#f0f7ff';
+            }
+            
+            function unhighlight() {
+                this.style.borderColor = '#ccc';
+                this.style.backgroundColor = 'transparent';
+            }
+            
+            sttUploadArea.addEventListener('drop', handleSTTDrop, false);
+            videoUploadArea.addEventListener('drop', handleVideoDrop, false);
+            
+            function handleSTTDrop(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                
+                if (files.length > 0) {
+                    sttFileInput.files = files;
+                    sttAudioFile = files[0];
+                    sttSelectedFile.textContent = `Selected: ${sttAudioFile.name}`;
+                    
+                    // Check file size (25MB limit)
+                    if (sttAudioFile.size > 26214400) {
+                        showStatus(sttStatusMessage, 'Error: File exceeds 25MB limit', 'error');
+                        sttTranscribeBtn.disabled = true;
+                    } else {
+                        showStatus(sttStatusMessage, `File ready: ${sttAudioFile.name}`, 'success');
+                        sttTranscribeBtn.disabled = false;
+                    }
+                }
+            }
+            
+            function handleVideoDrop(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                
+                if (files.length > 0) {
+                    videoFileInput.files = files;
+                    videoFile = files[0];
+                    videoSelectedFile.textContent = `Selected: ${videoFile.name}`;
+                    
+                    // Check file size (100MB limit)
+                    if (videoFile.size > 104857600) {
+                        showStatus(videoStatusMessage, 'Error: File exceeds 100MB limit', 'error');
+                    } else {
+                        showStatus(videoStatusMessage, `File ready: ${videoFile.name}`, 'success');
+                        
+                        // Display video preview
+                        const videoURL = URL.createObjectURL(videoFile);
+                        videoPreview.src = videoURL;
+                        videoPreview.style.display = 'block';
+                        
+                        // Extract frames when video is loaded
+                        videoPreview.onloadeddata = function() {
+                            extractVideoFrames(videoPreview);
+                        };
+                    }
+                }
+            }
+            
+            // STT - Format change
+            sttFormat.addEventListener('change', function() {
+                const isVerboseJson = this.value === 'verbose_json';
+                sttTimestampSegment.disabled = !isVerboseJson;
+                sttTimestampWord.disabled = !isVerboseJson;
+                
+                if (!isVerboseJson) {
+                    sttTimestampSegment.checked = false;
+                    sttTimestampWord.checked = false;
+                }
+            });
+            
+            // STT - Transcribe button
+            sttTranscribeBtn.addEventListener('click', function() {
+                const apiKey = apiKeyInput.value.trim();
+                
+                if (!apiKey) {
+                    showStatus(sttStatusMessage, 'Please enter your OpenAI API key', 'error');
+                    return;
+                }
+                
+                if (!sttAudioFile) {
+                    showStatus(sttStatusMessage, 'Please select an audio file', 'error');
+                    return;
+                }
+                
+                // Remember API key if checkbox is checked
+                if (rememberKeyCheckbox.checked) {
+                    localStorage.setItem('openai_api_key', apiKey);
+                } else {
+                    localStorage.removeItem('openai_api_key');
+                }
+                
+                // Collect transcription options
+                const transcriptionType = sttType.value;
+                const outputFormat = sttFormat.value;
+                const prompt = sttPrompt.value.trim();
+                
+                let timestampGranularities = [];
+                if (outputFormat === 'verbose_json') {
+                    if (sttTimestampSegment.checked) timestampGranularities.push('segment');
+                    if (sttTimestampWord.checked) timestampGranularities.push('word');
+                }
+                
+                // Show progress and disable button
+                sttProgressContainer.style.display = 'block';
+                sttTranscribeBtn.disabled = true;
+                showStatus(sttStatusMessage, 'Transcribing audio... please wait', '');
+                
+                // Simulate progress
+                let progress = 0;
+                const progressInterval = setInterval(() => {
+                    progress += 5;
+                    if (progress > 90) clearInterval(progressInterval);
+                    sttProgressBar.style.width = `${progress}%`;
+                }, 200);
+                
+                // Mock transcription (would be replaced with actual API call)
+                setTimeout(() => {
+                    clearInterval(progressInterval);
+                    sttProgressBar.style.width = '100%';
+                    
+                    // Generate mock transcript
+                    const mockTranscript = mockTranscribeAudio(sttAudioFile, transcriptionType, outputFormat, timestampGranularities, prompt);
+                    
+                    // Display result
+                    sttTranscript.textContent = mockTranscript;
+                    sttTranscript.style.display = 'block';
+                    
+                    showStatus(sttStatusMessage, 'Transcription complete!', 'success');
+                    sttTranscribeBtn.disabled = false;
+                    sttCopyBtn.disabled = false;
+                    sttSaveBtn.disabled = false;
+                    
+                    // Reset progress bar after a delay
+                    setTimeout(() => {
+                        sttProgressContainer.style.display = 'none';
+                        sttProgressBar.style.width = '0%';
+                    }, 1000);
+                }, 3000);
+            });
+            
+            // Video - Generate Script button
+            videoGenerateScriptBtn.addEventListener('click', function() {
+                const apiKey = apiKeyInput.value.trim();
+                
+                if (!apiKey) {
+                    showStatus(videoStatusMessage, 'Please enter your OpenAI API key', 'error');
+                    return;
+                }
+                
+                if (!videoFile) {
+                    showStatus(videoStatusMessage, 'Please select a video file', 'error');
+                    return;
+                }
+                
+                if (extractedFrames.length === 0) {
+                    showStatus(videoStatusMessage, 'Please wait for video frames to be extracted', 'error');
+                    return;
+                }
+                
+                // Remember API key if checkbox is checked
+                if (rememberKeyCheckbox.checked) {
+                    localStorage.setItem('openai_api_key', apiKey);
+                } else {
+                    localStorage.removeItem('openai_api_key');
+                }
+                
+                const style = scriptStyle.value;
+                
+                // Show status and disable button
+                showStatus(videoStatusMessage, 'Generating script from video content... please wait', '');
+                videoGenerateScriptBtn.disabled = true;
+                
+                // Simulate API call (would be replaced with actual GPT-4o API call)
+                setTimeout(() => {
+                    // Generate mock script based on style
+                    const script = mockGenerateVideoScript(style);
+                    videoScript.value = script;
+                    
+                    showStatus(videoStatusMessage, 'Script generated successfully!', 'success');
+                    videoGenerateScriptBtn.disabled = false;
+                }, 3000);
+            });
+            
+            // Video - Generate Audio button
+            videoGenerateAudioBtn.addEventListener('click', function() {
+                const apiKey = apiKeyInput.value.trim();
+                
+                if (!apiKey) {
+                    showStatus(videoStatusMessage, 'Please enter your OpenAI API key', 'error');
+                    return;
+                }
+                
+                const script = videoScript.value.trim();
+                if (!script) {
+                    showStatus(videoStatusMessage, 'Please generate or enter a script first', 'error');
+                    return;
+                }
+                
+                // Remember API key if checkbox is checked
+                if (rememberKeyCheckbox.checked) {
+                    localStorage.setItem('openai_api_key', apiKey);
+                } else {
+                    localStorage.removeItem('openai_api_key');
+                }
+                
+                // Collect voice options
+                const voice = videoVoice.value;
+                const accent = videoAccent.value;
+                const speed = videoSpeedSlider.value;
+                const tone = videoTone.value;
+                const instructions = videoCustomInstructions.value.trim();
+                
+                // Compose system instructions based on user selections
+                let systemInstructions = `You are narrating a video.`;
+                
+                if (accent !== 'neutral') {
+                    systemInstructions += ` Speak with a ${accent} accent.`;
+                }
+                
+                if (speed !== '1') {
+                    if (speed < 1) {
+                        systemInstructions += ` Speak slower than normal.`;
+                    } else {
+                        systemInstructions += ` Speak faster than normal.`;
+                    }
+                }
+                
+                if (tone !== 'neutral') {
+                    systemInstructions += ` Use a ${tone} tone.`;
+                }
+                
+                if (instructions) {
+                    systemInstructions += ` ${instructions}`;
+                }
+                
+                // Show status and disable button
+                showStatus(videoStatusMessage, 'Generating voiceover audio... please wait', '');
+                videoGenerateAudioBtn.disabled = true;
+                
+                // Simulate API call (would be replaced with actual API call)
+                setTimeout(() => {
+                    // Generate mock audio
+                    mockGenerateStyledAudio(script, voice, systemInstructions, 'gpt-4o-audio-preview')
+                        .then(blob => {
+                            videoAudioBlob = blob;
+                            const audioUrl = URL.createObjectURL(blob);
+                            videoAudioPlayer.src = audioUrl;
+                            videoAudioPlayer.style.display = 'block';
+                            
+                            showStatus(videoStatusMessage, 'Voiceover generated successfully!', 'success');
+                            videoPlayBtn.disabled = false;
+                            videoDownloadBtn.disabled = false;
+                            videoGenerateAudioBtn.disabled = false;
+                        })
+                        .catch(error => {
+                            showStatus(videoStatusMessage, `Error: ${error.message}`, 'error');
+                            videoGenerateAudioBtn.disabled = false;
+                        });
+                }, 4000);
+            });
+            
+            // Video - Play Audio button
+            videoPlayBtn.addEventListener('click', function() {
+                videoAudioPlayer.play();
+            });
+            
+            // Video - Download button
+            videoDownloadBtn.addEventListener('click', function() {
+                if (videoAudioBlob) {
+                    const downloadLink = document.createElement('a');
+                    downloadLink.href = URL.createObjectURL(videoAudioBlob);
+                    downloadLink.download = videoOutputFilename.value;
+                    document.body.appendChild(downloadLink);
+                    downloadLink.click();
+                    document.body.removeChild(downloadLink);
+                }
+            });
+            
+            // STT - Copy to clipboard
+            sttCopyBtn.addEventListener('click', function() {
+                navigator.clipboard.writeText(sttTranscript.textContent)
+                    .then(() => {
+                        showStatus(sttStatusMessage, 'Copied to clipboard!', 'success');
+                    })
+                    .catch(err => {
+                        showStatus(sttStatusMessage, 'Failed to copy: ' + err, 'error');
+                    });
+            });
+            
+            // STT - Save as text file
+            sttSaveBtn.addEventListener('click', function() {
+                const transcript = sttTranscript.textContent;
+                const blob = new Blob([transcript], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                
+                // Use original audio filename as base
+                let filename = 'transcript.txt';
+                if (sttAudioFile) {
+                    const baseName = sttAudioFile.name.split('.')[0];
+                    filename = `${baseName}_transcript.txt`;
+                }
+                
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            });
+            
+            // Extract frames from video
+            function extractVideoFrames(video) {
+                const totalFrames = 8; // Extract 8 frames for preview
+                const duration = video.duration;
+                extractedFrames = [];
+                videoFrames.innerHTML = '';
+                
+                // Calculate extraction points
+                const framesDiv = document.getElementById('video-frames');
+                
+                for (let i = 0; i < totalFrames; i++) {
+                    const time = (duration / (totalFrames + 1)) * (i + 1);
+                    
+                    // Create image element for frame
+                    const frameImg = document.createElement('img');
+                    frameImg.className = 'preview-frame';
+                    frameImg.setAttribute('data-time', time);
+                    framesDiv.appendChild(frameImg);
+                    
+                    // Extract frame
+                    extractFrameAtTime(video, time, frameImg);
+                    
+                    // Add click event to preview frame
+                    frameImg.addEventListener('click', function() {
+                        const time = parseFloat(this.getAttribute('data-time'));
+                        video.currentTime = time;
+                        
+                        // Update selected frame
+                        document.querySelectorAll('.preview-frame').forEach(frame => {
+                            frame.classList.remove('selected');
+                        });
+                        this.classList.add('selected');
+                    });
+                }
+            }
+            
+            function extractFrameAtTime(video, time, imgElement) {
+                video.currentTime = time;
+                
+                video.onseeked = function() {
+                    const canvas = videoCanvas;
+                    const ctx = canvas.getContext('2d');
+                    
+                    // Set canvas dimensions to match video
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+                    
+                    // Draw the video frame to the canvas
+                    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                    
+                    // Convert canvas to image data
+                    const dataURL = canvas.toDataURL('image/jpeg');
+                    imgElement.src = dataURL;
+                    
+                    // Store frame data
+                    extractedFrames.push({
+                        time: time,
+                        dataURL: dataURL
+                    });
+                    
+                    // Reset video current time
+                    video.onseeked = null;
+                };
+            }
+            
+            // Helper functions
+            function showStatus(element, message, type) {
+                element.textContent = message;
+                element.className = 'status';
+                if (type) {
+                    element.classList.add(type);
+                }
+            }
+            
+            // Mock function to simulate generating audio
+            async function mockGenerateAudio(text, voice) {
+                return new Promise((resolve) => {
+                    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                    const oscillator = ctx.createOscillator();
+                    const dst = oscillator.connect(ctx.createMediaStreamDestination());
+                    oscillator.start();
+                    
+                    setTimeout(function() {
+                        const recorder = new MediaRecorder(dst.stream);
+                        const chunks = [];
+                        
+                        recorder.ondataavailable = function(evt) {
+                            chunks.push(evt.data);
+                        };
+                        
+                        recorder.onstop = function() {
+                            const blob = new Blob(chunks, { type: 'audio/mp3' });
+                            resolve(blob);
+                        };
+                        
+                        recorder.start();
+                        setTimeout(function() {
+                            oscillator.stop();
+                            recorder.stop();
+                        }, 1000);
+                    }, 100);
+                });
+            }
+            
+            // Mock function to simulate generating styled audio
+            async function mockGenerateStyledAudio(text, voice, instructions, model) {
+                return new Promise((resolve) => {
+                    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                    const oscillator = ctx.createOscillator();
+                    const dst = oscillator.connect(ctx.createMediaStreamDestination());
+                    
+                    // Adjust frequency based on voice and style for demo effect
+                    if (voice === 'echo' || voice === 'onyx') {
+                        oscillator.frequency.value = 120; // Lower frequency for deeper voices
+                    } else if (voice === 'nova' || voice === 'shimmer') {
+                        oscillator.frequency.value = 280; // Higher frequency for brighter voices
+                    } else {
+                        oscillator.frequency.value = 200; // Middle frequency for neutral voices
+                    }
+                    
+                    oscillator.start();
+                    
+                    setTimeout(function() {
+                        const recorder = new MediaRecorder(dst.stream);
+                        const chunks = [];
+                        
+                        recorder.ondataavailable = function(evt) {
+                            chunks.push(evt.data);
+                        };
+                        
+                        recorder.onstop = function() {
+                            const blob = new Blob(chunks, { type: 'audio/mp3' });
+                            resolve(blob);
+                        };
+                        
+                        recorder.start();
+                        setTimeout(function() {
+                            oscillator.stop();
+                            recorder.stop();
+                        }, model === 'gpt-4o-audio-preview' ? 2000 : 1000); // Longer audio for GPT-4o model
+                    }, 100);
+                });
+            }
+            
+            // Mock function to simulate transcribing audio
+            function mockTranscribeAudio(file, type, format, timestampGranularities, prompt) {
+                let result = '';
+                
+                // Sample text for demonstration
+                const sampleText = "Welcome to the OpenAI Voice Toolkit demo. This is a sample transcription that would normally be generated by processing your audio file through OpenAI's Whisper model.";
+                
+                if (format === 'text') {
+                    result = sampleText;
+                } else if (format === 'json') {
+                    result = JSON.stringify({ text: sampleText }, null, 2);
+                } else if (format === 'verbose_json') {
+                    let jsonResult = {
+                        text: sampleText,
+                        segments: [
+                            {
+                                id: 0,
+                                start: 0.0,
+                                end: 4.5,
+                                text: "Welcome to the OpenAI Voice Toolkit demo."
+                            },
+                            {
+                                id: 1,
+                                start: 4.8,
+                                end: 10.2,
+                                text: "This is a sample transcription that would normally be generated by processing your audio file."
+                            },
+                            {
+                                id: 2,
+                                start: 10.5,
+                                end: 14.0,
+                                text: "Through OpenAI's Whisper model."
+                            }
+                        ]
+                    };
+                    
+                    // Add word timestamps if requested
+                    if (timestampGranularities.includes('word')) {
+                        jsonResult.words = [
+                            { word: "Welcome", start: 0.0, end: 0.5 },
+                            { word: "to", start: 0.5, end: 0.7 },
+                            { word: "the", start: 0.7, end: 0.9 },
+                            { word: "OpenAI", start: 0.9, end: 1.5 },
+                            { word: "Voice", start: 1.5, end: 1.9 },
+                            { word: "Toolkit", start: 1.9, end: 2.4 },
+                            { word: "demo", start: 2.4, end: 3.0 },
+                            // ... more words would be here in a real implementation
+                        ];
+                    }
+                    
+                    result = JSON.stringify(jsonResult, null, 2);
+                }
+                
+                // For translation, modify the output slightly
+                if (type === 'translation') {
+                    result = result.replace('Welcome to', 'Welcome to the translated version of');
+                }
+                
+                // Add prompt influence if provided
+                if (prompt && format === 'text') {
+                    result += "\n\nNote: The transcription was guided by the prompt: \"" + prompt + "\"";
+                }
+                
+                return result;
+            }
+            
+            // Mock function to generate video script
+            function mockGenerateVideoScript(style) {
+                const baseScript = "This video shows a beautiful landscape with mountains and a lake. The clouds move slowly across the sky while birds fly overhead. In the distance, we can see a small village nestled between the trees.";
+                
+                let script = "";
+                
+                switch (style) {
+                    case 'descriptive':
+                        script = "The footage reveals a breathtaking panoramic view of a mountain range, with snow-capped peaks reflecting in the crystal-clear waters of an alpine lake. Wispy clouds drift lazily across the azure sky, casting moving shadows across the landscape. Several birds of prey can be seen circling in the thermal currents. In the distance, a quaint village with traditional architecture is visible, its buildings partially obscured by a dense forest of evergreen trees.";
+                        break;
+                    case 'narrative':
+                        script = "As dawn breaks over the ancient mountains, the first light of day dances across the tranquil lake below. This hidden valley, untouched by time, has been home to generations of villagers who live in harmony with the majestic landscape. The birds soaring overhead are returning to their nests after a morning hunt, while in the small village beyond the trees, people are just beginning their day, unaware of our watchful gaze from afar.";
+                        break;
+                    case 'educational':
+                        script = "What we're observing is a classic example of a glacial valley formation. The U-shaped depression was carved during the last ice age, approximately 12,000 years ago. The lake occupies the deepest part of this depression and is fed by mountain streams. The bird species visible are primarily raptors, taking advantage of the updrafts created by the mountain's thermal conditions. The settlement pattern of the village demonstrates traditional Alpine architecture, with buildings strategically positioned to maximize sunlight while providing protection from harsh weather conditions.";
+                        break;
+                    case 'documentary':
+                        script = "Here, in the heart of the wilderness, lies one of nature's most spectacular creations. These mountains, formed over millions of years through the relentless forces of geological upheaval, stand as silent sentinels over the pristine lake below. The remarkable clarity of the water speaks to the unspoiled purity of this remote ecosystem. The village that clings to the distant slopes represents one of the last remaining traditional settlements in the region, where people maintain a way of life little changed for centuries.";
+                        break;
+                    case 'minimal':
+                        script = "Mountain range. Alpine lake. Clear sky with scattered clouds. Birds in flight. Remote village surrounded by forest.";
+                        break;
+                    default:
+                        script = baseScript;
+                }
+                
+                return script;
+            }
+        });
+    </script>
+</body>
+</html>.addEventListener(eventName, preventDefaults, false);
+                videoUploadArea.addEventListener(eventName, preventDefaults, false);
+            });
+            
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            
+            ['dragenter', 'dragover'].forEach(eventName => {
+                sttUploadArea
