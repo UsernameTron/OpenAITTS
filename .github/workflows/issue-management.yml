@@ -1,0 +1,47 @@
+name: Issue Management
+
+on:
+  issues:
+    types: [opened, labeled]
+
+jobs:
+  add-comment:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: Add Comment to New Issues
+        if: github.event.action == 'opened'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: 'Thank you for opening this issue! We\'ll review it as soon as possible.'
+            })
+      
+      - name: Add Bug Report Comment
+        if: github.event.action == 'labeled' && github.event.label.name == 'bug'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: 'Thanks for reporting this bug. When providing details, please include:\n\n- Browser and OS version\n- Steps to reproduce\n- Expected vs actual behavior\n- Screenshots if applicable'
+            })
+      
+      - name: Add Feature Request Comment
+        if: github.event.action == 'labeled' && github.event.label.name == 'enhancement'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: 'Thanks for suggesting this feature! Please provide as much detail as possible about how this would improve your workflow.'
+            })
