@@ -652,6 +652,7 @@
             <div class="section">
                 <h2 class="section-title">Voice Selection</h2>
                 <div class="voice-options">
+                    <!-- Original voices -->
                     <div class="voice-option" data-voice="alloy">
                         <div class="voice-icon">🔊</div>
                         <div class="voice-name">Alloy</div>
@@ -682,6 +683,32 @@
                         <div class="voice-name">Shimmer</div>
                         <div class="voice-description">Clear & melodic</div>
                     </div>
+                    <!-- New voices -->
+                    <div class="voice-option" data-voice="breeze">
+                        <div class="voice-icon">🔊</div>
+                        <div class="voice-name">Breeze</div>
+                        <div class="voice-description">Gentle & smooth</div>
+                    </div>
+                    <div class="voice-option" data-voice="ember">
+                        <div class="voice-icon">🔊</div>
+                        <div class="voice-name">Ember</div>
+                        <div class="voice-description">Warm & dynamic</div>
+                    </div>
+                    <div class="voice-option" data-voice="comet">
+                        <div class="voice-icon">🔊</div>
+                        <div class="voice-name">Comet</div>
+                        <div class="voice-description">Energetic & youthful</div>
+                    </div>
+                    <div class="voice-option" data-voice="sterling">
+                        <div class="voice-icon">🔊</div>
+                        <div class="voice-name">Sterling</div>
+                        <div class="voice-description">Premium & refined</div>
+                    </div>
+                    <div class="voice-option" data-voice="aurora">
+                        <div class="voice-icon">🔊</div>
+                        <div class="voice-name">Aurora</div>
+                        <div class="voice-description">Ethereal & calming</div>
+                    </div>
                 </div>
             </div>
             
@@ -699,6 +726,12 @@
                             <option value="wav">WAV</option>
                         </select>
                     </div>
+                </div>
+                
+                <!-- Cost estimate display -->
+                <div class="cost-estimate-container">
+                    <p>Estimated cost: <span id="tts-cost-estimate">$0.0000</span></p>
+                    <p class="help-text">Based on character count and selected model</p>
                 </div>
             </div>
             
@@ -724,6 +757,7 @@
             <div class="section">
                 <h2 class="section-title">Voice Selection</h2>
                 <div class="voice-options">
+                    <!-- Original voices -->
                     <div class="voice-option" data-voice="alloy">
                         <div class="voice-icon">🔊</div>
                         <div class="voice-name">Alloy</div>
@@ -753,6 +787,32 @@
                         <div class="voice-icon">🔊</div>
                         <div class="voice-name">Shimmer</div>
                         <div class="voice-description">Clear & melodic</div>
+                    </div>
+                    <!-- New voices -->
+                    <div class="voice-option" data-voice="breeze">
+                        <div class="voice-icon">🔊</div>
+                        <div class="voice-name">Breeze</div>
+                        <div class="voice-description">Gentle & smooth</div>
+                    </div>
+                    <div class="voice-option" data-voice="ember">
+                        <div class="voice-icon">🔊</div>
+                        <div class="voice-name">Ember</div>
+                        <div class="voice-description">Warm & dynamic</div>
+                    </div>
+                    <div class="voice-option" data-voice="comet">
+                        <div class="voice-icon">🔊</div>
+                        <div class="voice-name">Comet</div>
+                        <div class="voice-description">Energetic & youthful</div>
+                    </div>
+                    <div class="voice-option" data-voice="sterling">
+                        <div class="voice-icon">🔊</div>
+                        <div class="voice-name">Sterling</div>
+                        <div class="voice-description">Premium & refined</div>
+                    </div>
+                    <div class="voice-option" data-voice="aurora">
+                        <div class="voice-icon">🔊</div>
+                        <div class="voice-name">Aurora</div>
+                        <div class="voice-description">Ethereal & calming</div>
                     </div>
                 </div>
             </div>
@@ -787,6 +847,15 @@
                             <div class="voice-name">Calm</div>
                             <div class="voice-description">Soothing & peaceful</div>
                         </div>
+                        <!-- New style presets leveraging new capabilities -->
+                        <div class="style-preset" data-preset="whisper">
+                            <div class="voice-name">Whisper</div>
+                            <div class="voice-description">Soft & intimate</div>
+                        </div>
+                        <div class="style-preset" data-preset="dramatic">
+                            <div class="voice-name">Dramatic</div>
+                            <div class="voice-description">Theatrical & intense</div>
+                        </div>
                     </div>
                 </div>
                 
@@ -803,6 +872,12 @@
                             <option value="irish">Irish</option>
                             <option value="scottish">Scottish</option>
                             <option value="south-african">South African</option>
+                            <!-- New accent options -->
+                            <option value="canadian">Canadian</option>
+                            <option value="french">French</option>
+                            <option value="german">German</option>
+                            <option value="spanish">Spanish</option>
+                            <option value="japanese">Japanese</option>
                         </select>
                     </div>
                 </div>
@@ -824,6 +899,11 @@
                             <option value="professional">Professional</option>
                             <option value="enthusiastic">Enthusiastic</option>
                             <option value="serious">Serious</option>
+                            <!-- New tone options -->
+                            <option value="cheerful">Cheerful</option>
+                            <option value="empathetic">Empathetic</option>
+                            <option value="authoritative">Authoritative</option>
+                            <option value="conversational">Conversational</option>
                         </select>
                     </div>
                 </div>
@@ -831,8 +911,9 @@
                 <button type="button" class="collapsible">Custom Instructions</button>
                 <div class="collapsible-content">
                     <div class="control-group">
-                        <label for="custom-instructions">Detailed Voice Instructions:</label>
+                        <label for="custom-instructions">Style Instructions:</label>
                         <textarea id="custom-instructions" placeholder="Example: Speak in a calm, gentle tone with slight pauses between sentences. Emphasize important words and use a slightly higher pitch for questions." rows="3"></textarea>
+                        <p class="help-text">These instructions will be sent directly to the new GPT-4o Mini TTS model to control voice characteristics.</p>
                     </div>
                 </div>
                 
@@ -841,8 +922,15 @@
                     <select id="advanced-tts-model">
                         <option value="tts-1">TTS-1 (Standard)</option>
                         <option value="tts-1-hd">TTS-1-HD (High Definition)</option>
+                        <option value="gpt-4o-mini-tts" selected>GPT-4o Mini TTS (New)</option>
                         <option value="gpt-4o-audio-preview">GPT-4o Audio (Advanced Styling)</option>
                     </select>
+                </div>
+                
+                <!-- Cost estimate display -->
+                <div class="cost-estimate-container">
+                    <p>Estimated cost: <span id="advanced-tts-cost-estimate">$0.0000</span></p>
+                    <p class="help-text">Based on character count and selected model</p>
                 </div>
             </div>
             
@@ -1001,6 +1089,11 @@
                         <option value="onyx">Onyx (Authoritative)</option>
                         <option value="nova">Nova (Friendly & bright)</option>
                         <option value="shimmer">Shimmer (Clear & melodic)</option>
+                        <option value="breeze">Breeze (Gentle & smooth)</option>
+                        <option value="ember">Ember (Warm & dynamic)</option>
+                        <option value="comet">Comet (Energetic & youthful)</option>
+                        <option value="sterling">Sterling (Premium & refined)</option>
+                        <option value="aurora">Aurora (Ethereal & calming)</option>
                     </select>
                 </div>
                 
@@ -1047,6 +1140,12 @@
                         <label for="video-output-filename">Save Audio As:</label>
                         <input type="text" id="video-output-filename" value="video_narration.mp3">
                     </div>
+                </div>
+                
+                <!-- Cost estimate display -->
+                <div class="cost-estimate-container">
+                    <p>Estimated cost: <span id="video-cost-estimate">$0.0000</span></p>
+                    <p class="help-text">Based on script length and using the gpt-4o-mini-tts model</p>
                 </div>
             </div>
             
@@ -1202,16 +1301,28 @@
             let videoAudioBlob = null;
             let extractedFrames = [];
             
-            // Basic TTS - Character counter
+            // Basic TTS - Character counter and cost estimation
             ttsTextInput.addEventListener('input', function() {
                 const text = this.value;
-                ttsCharCount.textContent = text.length;
+                const charCount = text.length;
+                ttsCharCount.textContent = charCount;
+                
+                // Update cost estimate
+                const cost = estimateCost(text, 'tts');
+                document.getElementById('tts-cost-estimate').textContent = `$${cost}`;
             });
             
-            // Advanced TTS - Character counter
+            // Advanced TTS - Character counter and cost estimation
             advancedTtsTextInput.addEventListener('input', function() {
                 const text = this.value;
-                advancedTtsCharCount.textContent = text.length;
+                const charCount = text.length;
+                advancedTtsCharCount.textContent = charCount;
+                
+                // Update cost estimate for advanced TTS
+                const cost = estimateCost(text, 'tts');
+                if (document.getElementById('advanced-tts-cost-estimate')) {
+                    document.getElementById('advanced-tts-cost-estimate').textContent = `$${cost}`;
+                }
             });
             
             // Basic TTS - Voice selection
@@ -1283,6 +1394,21 @@
                             toneSelect.value = 'serious';
                             customInstructions.value = 'Speak in a soothing, calming voice. Use a lower pitch and speak slowly with gentle transitions between sentences.';
                             break;
+                        // New presets
+                        case 'whisper':
+                            accentSelect.value = 'neutral';
+                            speedSlider.value = 0.7;
+                            speedValue.textContent = '0.7';
+                            toneSelect.value = 'serious';
+                            customInstructions.value = 'Speak in a soft whisper, as if sharing a secret. Keep your voice low and intimate.';
+                            break;
+                        case 'dramatic':
+                            accentSelect.value = 'british';
+                            speedSlider.value = 0.8;
+                            speedValue.textContent = '0.8';
+                            toneSelect.value = 'serious';
+                            customInstructions.value = 'Speak with intense dramatic flair, emphasizing emotional words with strong vocal variations. Use strategic pauses for dramatic effect.';
+                            break;
                     }
                 });
             });
@@ -1290,6 +1416,36 @@
             // Speed slider
             speedSlider.addEventListener('input', function() {
                 speedValue.textContent = this.value;
+            });
+            
+            // Model selection change handler
+            advancedTtsModel.addEventListener('change', function() {
+                const model = this.value;
+                // Find the custom instructions button
+                const customInstructionsButton = Array.from(document.querySelectorAll('button.collapsible')).find(
+                    button => button.textContent.trim() === 'Custom Instructions'
+                );
+                const styleInstructionsSection = customInstructionsButton?.nextElementSibling;
+                
+                // Only enable style instructions for models that support it
+                if (styleInstructionsSection) {
+                    if (model === 'gpt-4o-mini-tts' || model === 'gpt-4o-audio-preview') {
+                        styleInstructionsSection.style.opacity = '1';
+                        const textarea = styleInstructionsSection.querySelector('textarea');
+                        if (textarea) textarea.disabled = false;
+                    } else {
+                        styleInstructionsSection.style.opacity = '0.5';
+                        const textarea = styleInstructionsSection.querySelector('textarea');
+                        if (textarea) textarea.disabled = true;
+                    }
+                }
+                
+                // Update cost estimate
+                const text = document.getElementById('advanced-tts-text-input').value;
+                const cost = estimateCost(text, 'tts');
+                if (document.getElementById('advanced-tts-cost-estimate')) {
+                    document.getElementById('advanced-tts-cost-estimate').textContent = `$${cost}`;
+                }
             });
             
             // Video speed slider
@@ -1337,34 +1493,30 @@
                     localStorage.removeItem('openai_api_key');
                 }
                 
-                // Mock API call for demo purposes
-                // In a real implementation, this would make an actual API call to OpenAI
+                // API call to generate speech
                 showStatus(ttsStatusMessage, 'Generating speech... please wait', '');
-                ttsGenerateBtn.disabled = true;
+                this.disabled = true;
                 
-                // Simulate API delay
-                setTimeout(() => {
-                    // Create a mock audio blob (in real implementation, this would be the API response)
-                    mockGenerateAudio(text, selectedVoice)
-                        .then(blob => {
-                            ttsAudioBlob = blob;
-                            const audioUrl = URL.createObjectURL(blob);
-                            ttsAudioPlayer.src = audioUrl;
-                            ttsAudioPlayer.style.display = 'block';
-                            
-                            showStatus(ttsStatusMessage, 'Speech generated successfully!', 'success');
-                            ttsPlayBtn.disabled = false;
-                            ttsDownloadBtn.disabled = false;
-                            ttsGenerateBtn.disabled = false;
-                        })
-                        .catch(error => {
-                            showStatus(ttsStatusMessage, `Error: ${error.message}`, 'error');
-                            ttsGenerateBtn.disabled = false;
-                        });
-                }, 1500);
+                // Use the real API function
+                generateSpeech(text, selectedVoice, "", "gpt-4o-mini-tts")
+                    .then(blob => {
+                        ttsAudioBlob = blob;
+                        const audioUrl = URL.createObjectURL(blob);
+                        ttsAudioPlayer.src = audioUrl;
+                        ttsAudioPlayer.style.display = 'block';
+                        
+                        showStatus(ttsStatusMessage, 'Speech generated successfully!', 'success');
+                        ttsPlayBtn.disabled = false;
+                        ttsDownloadBtn.disabled = false;
+                        this.disabled = false;
+                    })
+                    .catch(error => {
+                        showStatus(ttsStatusMessage, `Error: ${error.message}`, 'error');
+                        this.disabled = false;
+                    });
             });
             
-            // Advanced TTS - Generate speech
+            // Advanced TTS - Generate speech with style instructions
             advancedTtsGenerateBtn.addEventListener('click', function() {
                 const apiKey = apiKeyInput.value.trim();
                 const text = advancedTtsTextInput.value.trim();
@@ -1372,7 +1524,7 @@
                 const accent = accentSelect.value;
                 const speed = speedSlider.value;
                 const tone = toneSelect.value;
-                const instructions = customInstructions.value.trim();
+                const customInstructionsText = customInstructions.value.trim();
                 
                 // Validation
                 if (!apiKey) {
@@ -1392,52 +1544,50 @@
                     localStorage.removeItem('openai_api_key');
                 }
                 
-                // Compose system instructions based on user selections
-                let systemInstructions = `You are a helpful assistant that can generate audio from text.`;
+                // Compose style instructions
+                let styleInstructions = "";
                 
                 if (accent !== 'neutral') {
-                    systemInstructions += ` Speak with a ${accent} accent.`;
+                    styleInstructions += `Speak with a ${accent} accent. `;
                 }
                 
                 if (speed !== '1') {
-                    if (speed < 1) {
-                        systemInstructions += ` Speak slower than normal.`;
+                    if (parseFloat(speed) < 1) {
+                        styleInstructions += `Speak slower than normal. `;
                     } else {
-                        systemInstructions += ` Speak faster than normal.`;
+                        styleInstructions += `Speak faster than normal. `;
                     }
                 }
                 
                 if (tone !== 'neutral') {
-                    systemInstructions += ` Use a ${tone} tone.`;
+                    styleInstructions += `Use a ${tone} tone. `;
                 }
                 
-                if (instructions) {
-                    systemInstructions += ` ${instructions}`;
+                if (customInstructionsText) {
+                    styleInstructions += customInstructionsText;
                 }
                 
+                // Status and button updates
                 showStatus(advancedTtsStatusMessage, 'Generating styled speech... please wait', '');
-                advancedTtsGenerateBtn.disabled = true;
+                this.disabled = true;
                 
-                // Simulate API delay (longer for advanced processing)
-                setTimeout(() => {
-                    // Create a mock audio blob (in real implementation, this would be the API response)
-                    mockGenerateStyledAudio(text, advancedSelectedVoice, systemInstructions, model)
-                        .then(blob => {
-                            advancedTtsAudioBlob = blob;
-                            const audioUrl = URL.createObjectURL(blob);
-                            advancedTtsAudioPlayer.src = audioUrl;
-                            advancedTtsAudioPlayer.style.display = 'block';
-                            
-                            showStatus(advancedTtsStatusMessage, 'Styled speech generated successfully!', 'success');
-                            advancedTtsPlayBtn.disabled = false;
-                            advancedTtsDownloadBtn.disabled = false;
-                            advancedTtsGenerateBtn.disabled = false;
-                        })
-                        .catch(error => {
-                            showStatus(advancedTtsStatusMessage, `Error: ${error.message}`, 'error');
-                            advancedTtsGenerateBtn.disabled = false;
-                        });
-                }, 2500);
+                // Make API call with new parameters
+                generateSpeech(text, advancedSelectedVoice, styleInstructions, model)
+                    .then(blob => {
+                        advancedTtsAudioBlob = blob;
+                        const audioUrl = URL.createObjectURL(blob);
+                        advancedTtsAudioPlayer.src = audioUrl;
+                        advancedTtsAudioPlayer.style.display = 'block';
+                        
+                        showStatus(advancedTtsStatusMessage, 'Speech generated successfully!', 'success');
+                        advancedTtsPlayBtn.disabled = false;
+                        advancedTtsDownloadBtn.disabled = false;
+                        this.disabled = false;
+                    })
+                    .catch(error => {
+                        showStatus(advancedTtsStatusMessage, `Error: ${error.message}`, 'error');
+                        this.disabled = false;
+                    });
             });
             
             // Basic TTS - Play button
@@ -1645,29 +1795,35 @@
                     sttProgressBar.style.width = `${progress}%`;
                 }, 200);
                 
-                // Mock transcription (would be replaced with actual API call)
-                setTimeout(() => {
-                    clearInterval(progressInterval);
-                    sttProgressBar.style.width = '100%';
-                    
-                    // Generate mock transcript
-                    const mockTranscript = mockTranscribeAudio(sttAudioFile, transcriptionType, outputFormat, timestampGranularities, prompt);
-                    
-                    // Display result
-                    sttTranscript.textContent = mockTranscript;
-                    sttTranscript.style.display = 'block';
-                    
-                    showStatus(sttStatusMessage, 'Transcription complete!', 'success');
-                    sttTranscribeBtn.disabled = false;
-                    sttCopyBtn.disabled = false;
-                    sttSaveBtn.disabled = false;
-                    
-                    // Reset progress bar after a delay
-                    setTimeout(() => {
-                        sttProgressContainer.style.display = 'none';
+                // Make the actual API call for transcription
+                transcribeAudio(sttAudioFile, transcriptionType, outputFormat, timestampGranularities, prompt)
+                    .then(transcript => {
+                        clearInterval(progressInterval);
+                        sttProgressBar.style.width = '100%';
+                        
+                        // Display result
+                        sttTranscript.textContent = transcript;
+                        sttTranscript.style.display = 'block';
+                        
+                        showStatus(sttStatusMessage, 'Transcription complete!', 'success');
+                        sttTranscribeBtn.disabled = false;
+                        sttCopyBtn.disabled = false;
+                        sttSaveBtn.disabled = false;
+                        
+                        // Reset progress bar after a delay
+                        setTimeout(() => {
+                            sttProgressContainer.style.display = 'none';
+                            sttProgressBar.style.width = '0%';
+                        }, 1000);
+                    })
+                    .catch(error => {
+                        clearInterval(progressInterval);
                         sttProgressBar.style.width = '0%';
-                    }, 1000);
-                }, 3000);
+                        
+                        showStatus(sttStatusMessage, `Error: ${error.message}`, 'error');
+                        sttTranscribeBtn.disabled = false;
+                        sttProgressContainer.style.display = 'none';
+                    });
             });
             
             // Video - Generate Script button
@@ -1713,6 +1869,16 @@
                 }, 3000);
             });
             
+            // Script input for cost estimation
+            videoScript.addEventListener('input', function() {
+                const text = this.value;
+                // Update cost estimate
+                const cost = estimateCost(text, 'tts');
+                if (document.getElementById('video-cost-estimate')) {
+                    document.getElementById('video-cost-estimate').textContent = `$${cost}`;
+                }
+            });
+            
             // Video - Generate Audio button
             videoGenerateAudioBtn.addEventListener('click', function() {
                 const apiKey = apiKeyInput.value.trim();
@@ -1743,52 +1909,50 @@
                 const instructions = videoCustomInstructions.value.trim();
                 
                 // Compose system instructions based on user selections
-                let systemInstructions = `You are narrating a video.`;
+                let styleInstructions = `You are narrating a video.`;
                 
                 if (accent !== 'neutral') {
-                    systemInstructions += ` Speak with a ${accent} accent.`;
+                    styleInstructions += ` Speak with a ${accent} accent.`;
                 }
                 
                 if (speed !== '1') {
-                    if (speed < 1) {
-                        systemInstructions += ` Speak slower than normal.`;
+                    if (parseFloat(speed) < 1) {
+                        styleInstructions += ` Speak slower than normal.`;
                     } else {
-                        systemInstructions += ` Speak faster than normal.`;
+                        styleInstructions += ` Speak faster than normal.`;
                     }
                 }
                 
                 if (tone !== 'neutral') {
-                    systemInstructions += ` Use a ${tone} tone.`;
+                    styleInstructions += ` Use a ${tone} tone.`;
                 }
                 
                 if (instructions) {
-                    systemInstructions += ` ${instructions}`;
+                    styleInstructions += ` ${instructions}`;
                 }
                 
-                // Show status and disable button
+                // Status updates
                 showStatus(videoStatusMessage, 'Generating voiceover audio... please wait', '');
-                videoGenerateAudioBtn.disabled = true;
+                this.disabled = true;
                 
-                // Simulate API call (would be replaced with actual API call)
-                setTimeout(() => {
-                    // Generate mock audio
-                    mockGenerateStyledAudio(script, voice, systemInstructions, 'gpt-4o-audio-preview')
-                        .then(blob => {
-                            videoAudioBlob = blob;
-                            const audioUrl = URL.createObjectURL(blob);
-                            videoAudioPlayer.src = audioUrl;
-                            videoAudioPlayer.style.display = 'block';
-                            
-                            showStatus(videoStatusMessage, 'Voiceover generated successfully!', 'success');
-                            videoPlayBtn.disabled = false;
-                            videoDownloadBtn.disabled = false;
-                            videoGenerateAudioBtn.disabled = false;
-                        })
-                        .catch(error => {
-                            showStatus(videoStatusMessage, `Error: ${error.message}`, 'error');
-                            videoGenerateAudioBtn.disabled = false;
-                        });
-                }, 4000);
+                // Use the new API call
+                generateVoiceover(script, voice, styleInstructions, 'gpt-4o-mini-tts')
+                    .then(blob => {
+                        videoAudioBlob = blob;
+                        const audioUrl = URL.createObjectURL(blob);
+                        videoAudioPlayer.src = audioUrl;
+                        videoAudioPlayer.style.display = 'block';
+                        
+                        videoPlayBtn.disabled = false;
+                        videoDownloadBtn.disabled = false;
+                        this.disabled = false;
+                        
+                        showStatus(videoStatusMessage, 'Voiceover generated successfully!', 'success');
+                    })
+                    .catch(error => {
+                        showStatus(videoStatusMessage, `Error: ${error.message}`, 'error');
+                        this.disabled = false;
+                    });
             });
             
             // Video - Play Audio button
@@ -1915,140 +2079,205 @@
                 }
             }
             
-            // Mock function to simulate generating audio
-            async function mockGenerateAudio(text, voice) {
-                return new Promise((resolve) => {
-                    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-                    const oscillator = ctx.createOscillator();
-                    const dst = oscillator.connect(ctx.createMediaStreamDestination());
-                    oscillator.start();
-                    
-                    setTimeout(function() {
-                        const recorder = new MediaRecorder(dst.stream);
-                        const chunks = [];
-                        
-                        recorder.ondataavailable = function(evt) {
-                            chunks.push(evt.data);
-                        };
-                        
-                        recorder.onstop = function() {
-                            const blob = new Blob(chunks, { type: 'audio/mp3' });
-                            resolve(blob);
-                        };
-                        
-                        recorder.start();
-                        setTimeout(function() {
-                            oscillator.stop();
-                            recorder.stop();
-                        }, 1000);
-                    }, 100);
-                });
+            // Updated TTS API Function with new model and style instructions support
+            async function generateSpeech(text, voice, styleInstructions, model = "gpt-4o-mini-tts") {
+              const apiKey = document.getElementById('api-key').value.trim();
+              if (!apiKey) {
+                throw new Error("API key is required");
+              }
+              
+              // Default to MP3 format
+              const format = document.getElementById('tts-format')?.value || 'mp3';
+              
+              try {
+                // Log estimated cost
+                const estimatedCost = estimateCost(text, 'tts');
+                console.log(`Estimated cost: $${estimatedCost}`);
+                
+                // For advanced models that support style instructions
+                if (model === "gpt-4o-mini-tts" || model === "gpt-4o-audio-preview") {
+                  const response = await fetch('https://api.openai.com/v1/audio/speech', {
+                    method: 'POST',
+                    headers: {
+                      'Authorization': `Bearer ${apiKey}`,
+                      'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                      model: model,
+                      voice: voice,
+                      input: text,
+                      response_format: format,
+                      speed: parseFloat(document.getElementById('speed-slider')?.value || 1.0),
+                      style_instructions: styleInstructions || "" // New parameter
+                    })
+                  });
+                  
+                  if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error?.message || `API request failed with status ${response.status}`);
+                  }
+                  
+                  // Get the audio data as a blob
+                  const blob = await response.blob();
+                  return blob;
+                } 
+                // For standard TTS models
+                else {
+                  const response = await fetch('https://api.openai.com/v1/audio/speech', {
+                    method: 'POST',
+                    headers: {
+                      'Authorization': `Bearer ${apiKey}`,
+                      'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                      model: model, // tts-1 or tts-1-hd
+                      voice: voice,
+                      input: text,
+                      response_format: format,
+                      speed: parseFloat(document.getElementById('speed-slider')?.value || 1.0)
+                    })
+                  });
+                  
+                  if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error?.message || `API request failed with status ${response.status}`);
+                  }
+                  
+                  // Get the audio data as a blob
+                  const blob = await response.blob();
+                  return blob;
+                }
+              } catch (error) {
+                console.error('Error generating speech:', error);
+                throw error;
+              }
             }
             
-            // Mock function to simulate generating styled audio
-            async function mockGenerateStyledAudio(text, voice, instructions, model) {
-                return new Promise((resolve) => {
-                    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-                    const oscillator = ctx.createOscillator();
-                    const dst = oscillator.connect(ctx.createMediaStreamDestination());
-                    
-                    // Adjust frequency based on voice and style for demo effect
-                    if (voice === 'echo' || voice === 'onyx') {
-                        oscillator.frequency.value = 120; // Lower frequency for deeper voices
-                    } else if (voice === 'nova' || voice === 'shimmer') {
-                        oscillator.frequency.value = 280; // Higher frequency for brighter voices
-                    } else {
-                        oscillator.frequency.value = 200; // Middle frequency for neutral voices
-                    }
-                    
-                    oscillator.start();
-                    
-                    setTimeout(function() {
-                        const recorder = new MediaRecorder(dst.stream);
-                        const chunks = [];
-                        
-                        recorder.ondataavailable = function(evt) {
-                            chunks.push(evt.data);
-                        };
-                        
-                        recorder.onstop = function() {
-                            const blob = new Blob(chunks, { type: 'audio/mp3' });
-                            resolve(blob);
-                        };
-                        
-                        recorder.start();
-                        setTimeout(function() {
-                            oscillator.stop();
-                            recorder.stop();
-                        }, model === 'gpt-4o-audio-preview' ? 2000 : 1000); // Longer audio for GPT-4o model
-                    }, 100);
-                });
+            // Cost estimation function for user feedback
+            function estimateCost(input, modelType) {
+              // For TTS models, estimate based on character count
+              if (modelType === 'tts') {
+                // Approximate token count (rough estimate)
+                const text = typeof input === 'string' ? input : '';
+                const tokenCount = text.length / 4;
+                
+                // $0.60 per million tokens for gpt-4o-mini-tts
+                return ((tokenCount / 1000000) * 0.60).toFixed(4);
+              } 
+              // For STT models, estimate based on file size/duration
+              else if (modelType === 'transcribe') {
+                // Very rough estimate based on file size
+                // Assuming ~1MB per minute of audio at moderate quality
+                const fileSizeInMB = input / (1024 * 1024);
+                const estimatedMinutes = fileSizeInMB;
+                
+                // $0.006 per minute for gpt-4o-transcribe
+                return (estimatedMinutes * 0.006).toFixed(4);
+              }
+              
+              return "0.0000"; // Default fallback
             }
             
-            // Mock function to simulate transcribing audio
-            function mockTranscribeAudio(file, type, format, timestampGranularities, prompt) {
-                let result = '';
+            // Voiceover generation with style instructions
+            async function generateVoiceover(script, voice, styleInstructions, model = "gpt-4o-mini-tts") {
+              // This is similar to generateSpeech but optimized for video narration
+              const apiKey = document.getElementById('api-key').value.trim();
+              if (!apiKey) {
+                throw new Error("API key is required");
+              }
+              
+              try {
+                const response = await fetch('https://api.openai.com/v1/audio/speech', {
+                  method: 'POST',
+                  headers: {
+                    'Authorization': `Bearer ${apiKey}`,
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({
+                    model: model,
+                    voice: voice,
+                    input: script,
+                    response_format: 'mp3',
+                    speed: parseFloat(document.getElementById('video-speed-slider')?.value || 1.0),
+                    style_instructions: styleInstructions
+                  })
+                });
                 
-                // Sample text for demonstration
-                const sampleText = "Welcome to the OpenAI Voice Toolkit demo. This is a sample transcription that would normally be generated by processing your audio file through OpenAI's Whisper model.";
+                if (!response.ok) {
+                  const errorData = await response.json();
+                  throw new Error(errorData.error?.message || `API request failed with status ${response.status}`);
+                }
                 
+                // Get the audio data as a blob
+                const blob = await response.blob();
+                return blob;
+              } catch (error) {
+                console.error('Error generating voiceover:', error);
+                throw error;
+              }
+            }
+            
+            // Updated Speech-to-Text integration with new model
+            async function transcribeAudio(file, type, format, timestampGranularities, prompt) {
+              const apiKey = document.getElementById('api-key').value.trim();
+              if (!apiKey) {
+                throw new Error("API key is required");
+              }
+              
+              try {
+                // Create a FormData object to upload the file
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('model', 'gpt-4o-transcribe'); // Updated to new model
+                
+                // Set response format
+                formData.append('response_format', format);
+                
+                // Add timestamps if requested (for verbose_json)
+                if (format === 'verbose_json' && timestampGranularities.length > 0) {
+                  formData.append('timestamp_granularities', JSON.stringify(timestampGranularities));
+                }
+                
+                // Add prompt if provided
+                if (prompt) {
+                  formData.append('prompt', prompt);
+                }
+                
+                // Estimate cost based on file duration (rough estimate)
+                const estimatedCost = estimateCost(file.size, 'transcribe');
+                console.log(`Estimated transcription cost: $${estimatedCost}`);
+                
+                // Determine endpoint based on type (transcription or translation)
+                const endpoint = type === 'translation' 
+                  ? 'https://api.openai.com/v1/audio/translations'
+                  : 'https://api.openai.com/v1/audio/transcriptions';
+                
+                // Make the API request
+                const response = await fetch(endpoint, {
+                  method: 'POST',
+                  headers: {
+                    'Authorization': `Bearer ${apiKey}`
+                    // Don't set Content-Type header for FormData - browser will set it
+                  },
+                  body: formData
+                });
+                
+                if (!response.ok) {
+                  const errorData = await response.json();
+                  throw new Error(errorData.error?.message || `API request failed with status ${response.status}`);
+                }
+                
+                // Parse the response based on format
                 if (format === 'text') {
-                    result = sampleText;
-                } else if (format === 'json') {
-                    result = JSON.stringify({ text: sampleText }, null, 2);
-                } else if (format === 'verbose_json') {
-                    let jsonResult = {
-                        text: sampleText,
-                        segments: [
-                            {
-                                id: 0,
-                                start: 0.0,
-                                end: 4.5,
-                                text: "Welcome to the OpenAI Voice Toolkit demo."
-                            },
-                            {
-                                id: 1,
-                                start: 4.8,
-                                end: 10.2,
-                                text: "This is a sample transcription that would normally be generated by processing your audio file."
-                            },
-                            {
-                                id: 2,
-                                start: 10.5,
-                                end: 14.0,
-                                text: "Through OpenAI's Whisper model."
-                            }
-                        ]
-                    };
-                    
-                    // Add word timestamps if requested
-                    if (timestampGranularities.includes('word')) {
-                        jsonResult.words = [
-                            { word: "Welcome", start: 0.0, end: 0.5 },
-                            { word: "to", start: 0.5, end: 0.7 },
-                            { word: "the", start: 0.7, end: 0.9 },
-                            { word: "OpenAI", start: 0.9, end: 1.5 },
-                            { word: "Voice", start: 1.5, end: 1.9 },
-                            { word: "Toolkit", start: 1.9, end: 2.4 },
-                            { word: "demo", start: 2.4, end: 3.0 },
-                            // ... more words would be here in a real implementation
-                        ];
-                    }
-                    
-                    result = JSON.stringify(jsonResult, null, 2);
+                  return await response.text();
+                } else {
+                  const jsonResponse = await response.json();
+                  return JSON.stringify(jsonResponse, null, 2);
                 }
-                
-                // For translation, modify the output slightly
-                if (type === 'translation') {
-                    result = result.replace('Welcome to', 'Welcome to the translated version of');
-                }
-                
-                // Add prompt influence if provided
-                if (prompt && format === 'text') {
-                    result += "\n\nNote: The transcription was guided by the prompt: \"" + prompt + "\"";
-                }
-                
-                return result;
+              } catch (error) {
+                console.error('Error transcribing audio:', error);
+                throw error;
+              }
             }
             
             // Mock function to generate video script

@@ -1,0 +1,107 @@
+<!-- Enhanced Style Instructions Section for Advanced TTS -->
+<div class="section">
+    <h2 class="section-title">Voice Styling</h2>
+    
+    <button type="button" class="collapsible">Style Presets</button>
+    <div class="collapsible-content">
+        <div class="style-presets">
+            <div class="style-preset" data-preset="british-narrator">
+                <div class="voice-name">British Narrator</div>
+                <div class="voice-description">David Attenborough style</div>
+            </div>
+            <div class="style-preset" data-preset="news-anchor">
+                <div class="voice-name">News Anchor</div>
+                <div class="voice-description">Professional & clear</div>
+            </div>
+            <div class="style-preset" data-preset="storyteller">
+                <div class="voice-name">Storyteller</div>
+                <div class="voice-description">Engaging & expressive</div>
+            </div>
+            <div class="style-preset" data-preset="teacher">
+                <div class="voice-name">Teacher</div>
+                <div class="voice-description">Clear & educational</div>
+            </div>
+            <div class="style-preset" data-preset="excited">
+                <div class="voice-name">Excited</div>
+                <div class="voice-description">Energetic & enthusiastic</div>
+            </div>
+            <div class="style-preset" data-preset="calm">
+                <div class="voice-name">Calm</div>
+                <div class="voice-description">Soothing & peaceful</div>
+            </div>
+            <!-- New style presets leveraging new capabilities -->
+            <div class="style-preset" data-preset="whisper">
+                <div class="voice-name">Whisper</div>
+                <div class="voice-description">Soft & intimate</div>
+            </div>
+            <div class="style-preset" data-preset="dramatic">
+                <div class="voice-name">Dramatic</div>
+                <div class="voice-description">Theatrical & intense</div>
+            </div>
+        </div>
+    </div>
+    
+    <button type="button" class="collapsible">Accent & Language</button>
+    <div class="collapsible-content">
+        <div class="control-group">
+            <label for="accent-select">Select Accent:</label>
+            <select id="accent-select">
+                <option value="neutral">Neutral</option>
+                <option value="american">American</option>
+                <option value="british">British</option>
+                <option value="australian">Australian</option>
+                <option value="indian">Indian</option>
+                <option value="irish">Irish</option>
+                <option value="scottish">Scottish</option>
+                <option value="south-african">South African</option>
+                <!-- New accent options -->
+                <option value="canadian">Canadian</option>
+                <option value="french">French</option>
+                <option value="german">German</option>
+                <option value="spanish">Spanish</option>
+                <option value="japanese">Japanese</option>
+            </select>
+        </div>
+    </div>
+    
+    <button type="button" class="collapsible">Speed & Tone</button>
+    <div class="collapsible-content">
+        <div class="slider-container">
+            <label for="speed-slider">Speaking Speed:</label>
+            <input type="range" min="0.5" max="2" value="1" step="0.1" class="slider" id="speed-slider">
+            <div class="slider-value"><span id="speed-value">1.0</span>x</div>
+        </div>
+        
+        <div class="control-group">
+            <label for="tone-select">Voice Tone:</label>
+            <select id="tone-select">
+                <option value="neutral">Neutral</option>
+                <option value="formal">Formal</option>
+                <option value="friendly">Friendly</option>
+                <option value="professional">Professional</option>
+                <option value="enthusiastic">Enthusiastic</option>
+                <option value="serious">Serious</option>
+                <!-- New tone options -->
+                <option value="cheerful">Cheerful</option>
+                <option value="empathetic">Empathetic</option>
+                <option value="authoritative">Authoritative</option>
+                <option value="conversational">Conversational</option>
+            </select>
+        </div>
+    </div>
+    
+    <button type="button" class="collapsible">Custom Instructions</button>
+    <div class="collapsible-content">
+        <div class="control-group">
+            <label for="custom-instructions">Style Instructions:</label>
+            <textarea id="custom-instructions" placeholder="Example: Speak in a calm, gentle tone with slight pauses between sentences. Emphasize important words and use a slightly higher pitch for questions." rows="3"></textarea>
+            <p class="help-text">These instructions will be sent directly to the new GPT-4o Mini TTS model to control voice characteristics.</p>
+        </div>
+    </div>
+    
+    <!-- Cost estimate display -->
+    <div class="cost-estimate-container">
+        <p>Estimated cost: <span id="tts-cost-estimate">$0.0000</span></p>
+        <p class="help-text">Based on character count and selected model</p>
+    </div>
+</div>
