@@ -26,15 +26,26 @@ document.getElementById('advanced-tts-text-input').addEventListener('input', fun
 // Model selection change handler
 document.getElementById('advanced-tts-model').addEventListener('change', function() {
     const model = this.value;
-    const styleInstructionsSection = document.querySelector('button.collapsible:contains("Custom Instructions")').nextElementSibling;
     
-    // Only enable style instructions for models that support it
-    if (model === 'tts-1' || model === 'tts-1-hd') {
-        styleInstructionsSection.style.opacity = '1';
-        styleInstructionsSection.querySelector('textarea').disabled = false;
-    } else {
+    // Find the custom instructions element more reliably
+    const allCollapsibles = document.querySelectorAll('button.collapsible');
+    let customInstructionsButton = null;
+    
+    for (let button of allCollapsibles) {
+        if (button.textContent.trim().includes('Custom Instructions')) {
+            customInstructionsButton = button;
+            break;
+        }
+    }
+    
+    const styleInstructionsSection = customInstructionsButton ? 
+        customInstructionsButton.nextElementSibling : null;
+    
+    // Disable style instructions entirely as they're not supported
+    if (styleInstructionsSection) {
         styleInstructionsSection.style.opacity = '0.5';
-        styleInstructionsSection.querySelector('textarea').disabled = true;
+        const textarea = styleInstructionsSection.querySelector('textarea');
+        if (textarea) textarea.disabled = true;
     }
     
     // Update cost estimate
@@ -50,10 +61,13 @@ document.getElementById('advanced-tts-generate-btn').addEventListener('click', f
     const apiKey = document.getElementById('api-key').value.trim();
     const text = document.getElementById('advanced-tts-text-input').value.trim();
     const model = document.getElementById('advanced-tts-model').value;
-    const accent = document.getElementById('accent-select').value;
-    const speed = document.getElementById('speed-slider').value;
-    const tone = document.getElementById('tone-select').value;
-    const customInstructions = document.getElementById('custom-instructions').value.trim();
+    
+    // Get voice selection - safely
+    let selectedVoice = 'alloy'; // Default voice
+    const selectedVoiceElement = document.querySelector('#advanced-tts-tab .voice-option.selected');
+    if (selectedVoiceElement) {
+        selectedVoice = selectedVoiceElement.getAttribute('data-voice') || 'alloy';
+    }
     
     // Validation
     if (!apiKey) {
@@ -67,54 +81,51 @@ document.getElementById('advanced-tts-generate-btn').addEventListener('click', f
     }
     
     // Remember API key if checkbox is checked
-    if (document.getElementById('remember-key').checked) {
+    const rememberCheckbox = document.getElementById('remember-key');
+    if (rememberCheckbox && rememberCheckbox.checked) {
         localStorage.setItem('openai_api_key', apiKey);
     } else {
         localStorage.removeItem('openai_api_key');
     }
     
-    // Compose style instructions
-    let styleInstructions = "";
-    
-    if (accent !== 'neutral') {
-        styleInstructions += `Speak with a ${accent} accent. `;
-    }
-    
-    if (speed !== '1') {
-        if (parseFloat(speed) < 1) {
-            styleInstructions += `Speak slower than normal. `;
-        } else {
-            styleInstructions += `Speak faster than normal. `;
-        }
-    }
-    
-    if (tone !== 'neutral') {
-        styleInstructions += `Use a ${tone} tone. `;
-    }
-    
-    if (customInstructions) {
-        styleInstructions += customInstructions;
-    }
+    // Style instructions are no longer used with the TTS API
+    const styleInstructions = "";
     
     // Status and button updates
-    showStatus(document.getElementById('advanced-tts-status-message'), 'Generating styled speech... please wait', '');
+    const statusElement = document.getElementById('advanced-tts-status-message');
+    if (statusElement) {
+        showStatus(statusElement, 'Generating speech... please wait', '');
+    }
     this.disabled = true;
+    
+    console.log(`Generating speech with model: ${model}, voice: ${selectedVoice}`);
     
     // Make API call with new parameters
     generateSpeech(text, selectedVoice, styleInstructions, model)
         .then(blob => {
             const audioElement = document.getElementById('advanced-tts-audio-player');
-            const audioUrl = URL.createObjectURL(blob);
-            audioElement.src = audioUrl;
-            audioElement.style.display = 'block';
-            
-            showStatus(document.getElementById('advanced-tts-status-message'), 'Speech generated successfully!', 'success');
-            document.getElementById('advanced-tts-play-btn').disabled = false;
-            document.getElementById('advanced-tts-download-btn').disabled = false;
+            if (audioElement) {
+                const audioUrl = URL.createObjectURL(blob);
+                audioElement.src = audioUrl;
+                audioElement.style.display = 'block';
+                
+                if (statusElement) {
+                    showStatus(statusElement, 'Speech generated successfully!', 'success');
+                }
+                
+                const playButton = document.getElementById('advanced-tts-play-btn');
+                if (playButton) playButton.disabled = false;
+                
+                const downloadButton = document.getElementById('advanced-tts-download-btn');
+                if (downloadButton) downloadButton.disabled = false;
+            }
             this.disabled = false;
         })
         .catch(error => {
-            showStatus(document.getElementById('advanced-tts-status-message'), `Error: ${error.message}`, 'error');
+            if (statusElement) {
+                showStatus(statusElement, `Error: ${error.message}`, 'error');
+            }
+            console.error('Speech generation error:', error);
             this.disabled = false;
         });
 });
@@ -197,61 +208,57 @@ document.getElementById('video-generate-audio-btn').addEventListener('click', fu
     const script = document.getElementById('video-script').value.trim();
     
     if (!apiKey || !script) {
-        showStatus(document.getElementById('video-status-message'), 
-            !apiKey ? 'Please enter your OpenAI API key' : 'Please generate or enter a script first', 
-            'error');
+        const statusElement = document.getElementById('video-status-message');
+        if (statusElement) {
+            showStatus(statusElement, 
+                !apiKey ? 'Please enter your OpenAI API key' : 'Please generate or enter a script first', 
+                'error');
+        }
         return;
     }
     
-    const voice = document.getElementById('video-voice').value;
-    const accent = document.getElementById('video-accent').value;
-    const speed = document.getElementById('video-speed-slider').value;
-    const tone = document.getElementById('video-tone').value;
-    const customInstructions = document.getElementById('video-custom-instructions').value.trim();
+    // Get selected voice
+    const voiceSelect = document.getElementById('video-voice');
+    const voice = voiceSelect ? voiceSelect.value : 'alloy';
     
-    // Build style instructions
-    let styleInstructions = `You are narrating a video.`;
-    
-    if (accent !== 'neutral') {
-        styleInstructions += ` Speak with a ${accent} accent.`;
-    }
-    
-    if (speed !== '1') {
-        if (parseFloat(speed) < 1) {
-            styleInstructions += ` Speak slower than normal.`;
-        } else {
-            styleInstructions += ` Speak faster than normal.`;
-        }
-    }
-    
-    if (tone !== 'neutral') {
-        styleInstructions += ` Use a ${tone} tone.`;
-    }
-    
-    if (customInstructions) {
-        styleInstructions += ` ${customInstructions}`;
-    }
+    // Style instructions are no longer used - blank string
+    const styleInstructions = "";
     
     // Status updates
-    showStatus(document.getElementById('video-status-message'), 'Generating voiceover audio... please wait', '');
+    const statusElement = document.getElementById('video-status-message');
+    if (statusElement) {
+        showStatus(statusElement, 'Generating voiceover audio... please wait', '');
+    }
     this.disabled = true;
     
-    // Use the new API call
-    generateVoiceover(script, voice, styleInstructions, 'gpt-4o-mini-tts')
+    console.log(`Generating voiceover with voice: ${voice}`);
+    
+    // Use the updated API call with standard TTS model
+    generateVoiceover(script, voice, styleInstructions, 'tts-1')
         .then(blob => {
             const audioElement = document.getElementById('video-audio-player');
-            const audioUrl = URL.createObjectURL(blob);
-            audioElement.src = audioUrl;
-            audioElement.style.display = 'block';
-            
-            document.getElementById('video-play-btn').disabled = false;
-            document.getElementById('video-download-btn').disabled = false;
+            if (audioElement) {
+                const audioUrl = URL.createObjectURL(blob);
+                audioElement.src = audioUrl;
+                audioElement.style.display = 'block';
+                
+                const playButton = document.getElementById('video-play-btn');
+                if (playButton) playButton.disabled = false;
+                
+                const downloadButton = document.getElementById('video-download-btn');
+                if (downloadButton) downloadButton.disabled = false;
+                
+                if (statusElement) {
+                    showStatus(statusElement, 'Voiceover generated successfully!', 'success');
+                }
+            }
             this.disabled = false;
-            
-            showStatus(document.getElementById('video-status-message'), 'Voiceover generated successfully!', 'success');
         })
         .catch(error => {
-            showStatus(document.getElementById('video-status-message'), `Error: ${error.message}`, 'error');
+            if (statusElement) {
+                showStatus(statusElement, `Error: ${error.message}`, 'error');
+            }
+            console.error('Voiceover generation error:', error);
             this.disabled = false;
         });
 });

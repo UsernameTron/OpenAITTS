@@ -13,59 +13,47 @@ async function generateSpeech(text, voice, styleInstructions, model = "tts-1") {
     const estimatedCost = estimateCost(text, 'tts');
     console.log(`Estimated cost: $${estimatedCost}`);
     
-    // For advanced models that support style instructions
-    if (model === "tts-1" || model === "tts-1-hd") {
-      const response = await fetch('https://api.openai.com/v1/audio/speech', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${apiKey}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          model: model,
-          voice: voice,
-          input: text,
-          response_format: format,
-          speed: parseFloat(document.getElementById('speed-slider')?.value || 1.0),
-          style_instructions: styleInstructions || "" // New parameter
-        })
-      });
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error?.message || `API request failed with status ${response.status}`);
-      }
-      
-      // Get the audio data as a blob
-      const blob = await response.blob();
-      return blob;
-    } 
-    // For standard TTS models
-    else {
-      const response = await fetch('https://api.openai.com/v1/audio/speech', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${apiKey}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          model: model, // tts-1 or tts-1-hd
-          voice: voice,
-          input: text,
-          response_format: format,
-          speed: parseFloat(document.getElementById('speed-slider')?.value || 1.0)
-        })
-      });
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error?.message || `API request failed with status ${response.status}`);
-      }
-      
-      // Get the audio data as a blob
-      const blob = await response.blob();
-      return blob;
+    // Create a base request object
+    const requestBody = {
+      model: model, // tts-1 or tts-1-hd
+      voice: voice,
+      input: text,
+      response_format: format
+    };
+    
+    // Add speed parameter if the slider exists
+    const speedSlider = document.getElementById('speed-slider');
+    if (speedSlider) {
+      requestBody.speed = parseFloat(speedSlider.value || 1.0);
     }
+    
+    // Remove style_instructions parameter entirely as it's not supported
+    
+    console.log("Making API request with:", JSON.stringify(requestBody));
+    console.log('API URL:', 'https://api.openai.com/v1/audio/speech');
+    console.log('Headers:', {
+      'Authorization': 'Bearer ' + (apiKey ? '*******' : 'MISSING'),
+      'Content-Type': 'application/json'
+    });
+    
+    const response = await fetch('https://api.openai.com/v1/audio/speech', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(requestBody)
+    });
+    
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error("API Error:", errorData);
+      throw new Error(errorData.error?.message || `API request failed with status ${response.status}`);
+    }
+    
+    // Get the audio data as a blob
+    const blob = await response.blob();
+    return blob;
   } catch (error) {
     console.error('Error generating speech:', error);
     throw error;
@@ -169,24 +157,41 @@ async function generateVoiceover(script, voice, styleInstructions, model = "tts-
   }
   
   try {
+    // Create a base request object
+    const requestBody = {
+      model: model, // tts-1 or tts-1-hd
+      voice: voice,
+      input: script,
+      response_format: 'mp3'
+    };
+    
+    // Add speed parameter if the slider exists
+    const speedSlider = document.getElementById('video-speed-slider');
+    if (speedSlider) {
+      requestBody.speed = parseFloat(speedSlider.value || 1.0);
+    }
+    
+    // Remove style_instructions parameter
+    
+    console.log("Making API request for voiceover with:", JSON.stringify(requestBody));
+    console.log('API URL:', 'https://api.openai.com/v1/audio/speech');
+    console.log('Headers:', {
+      'Authorization': 'Bearer ' + (apiKey ? '*******' : 'MISSING'),
+      'Content-Type': 'application/json'
+    });
+    
     const response = await fetch('https://api.openai.com/v1/audio/speech', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${apiKey}`,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({
-        model: model,
-        voice: voice,
-        input: script,
-        response_format: 'mp3',
-        speed: parseFloat(document.getElementById('video-speed-slider')?.value || 1.0),
-        style_instructions: styleInstructions
-      })
+      body: JSON.stringify(requestBody)
     });
     
     if (!response.ok) {
       const errorData = await response.json();
+      console.error("API Error:", errorData);
       throw new Error(errorData.error?.message || `API request failed with status ${response.status}`);
     }
     
