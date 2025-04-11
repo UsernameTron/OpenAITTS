@@ -29,7 +29,7 @@ document.getElementById('advanced-tts-model').addEventListener('change', functio
     const styleInstructionsSection = document.querySelector('button.collapsible:contains("Custom Instructions")').nextElementSibling;
     
     // Only enable style instructions for models that support it
-    if (model === 'gpt-4o-mini-tts' || model === 'gpt-4o-audio-preview') {
+    if (model === 'tts-1' || model === 'tts-1-hd') {
         styleInstructionsSection.style.opacity = '1';
         styleInstructionsSection.querySelector('textarea').disabled = false;
     } else {

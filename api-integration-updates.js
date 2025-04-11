@@ -1,5 +1,5 @@
 // Updated TTS API Function with new model and style instructions support
-async function generateSpeech(text, voice, styleInstructions, model = "gpt-4o-mini-tts") {
+async function generateSpeech(text, voice, styleInstructions, model = "tts-1") {
   const apiKey = document.getElementById('api-key').value.trim();
   if (!apiKey) {
     throw new Error("API key is required");
@@ -14,7 +14,7 @@ async function generateSpeech(text, voice, styleInstructions, model = "gpt-4o-mi
     console.log(`Estimated cost: $${estimatedCost}`);
     
     // For advanced models that support style instructions
-    if (model === "gpt-4o-mini-tts" || model === "gpt-4o-audio-preview") {
+    if (model === "tts-1" || model === "tts-1-hd") {
       const response = await fetch('https://api.openai.com/v1/audio/speech', {
         method: 'POST',
         headers: {
@@ -161,7 +161,7 @@ function estimateCost(input, modelType) {
 }
 
 // Voiceover generation with style instructions
-async function generateVoiceover(script, voice, styleInstructions, model = "gpt-4o-mini-tts") {
+async function generateVoiceover(script, voice, styleInstructions, model = "tts-1") {
   // This is similar to generateSpeech but optimized for video narration
   const apiKey = document.getElementById('api-key').value.trim();
   if (!apiKey) {
