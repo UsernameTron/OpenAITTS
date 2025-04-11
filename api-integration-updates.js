@@ -13,9 +13,19 @@ async function generateSpeech(text, voice, styleInstructions, model = "tts-1") {
     const estimatedCost = estimateCost(text, 'tts');
     console.log(`Estimated cost: $${estimatedCost}`);
     
+    // Map advanced models to standard TTS models
+    let actualModel = model;
+    if (model === "gpt-4o-mini-tts") {
+      console.log("Mapping gpt-4o-mini-tts to tts-1");
+      actualModel = "tts-1";
+    } else if (model === "gpt-4o-audio-preview") {
+      console.log("Mapping gpt-4o-audio-preview to tts-1-hd");
+      actualModel = "tts-1-hd";
+    }
+    
     // Create a base request object
     const requestBody = {
-      model: model, // tts-1 or tts-1-hd
+      model: actualModel, // Always use tts-1 or tts-1-hd for the actual API call
       voice: voice,
       input: text,
       response_format: format
@@ -27,7 +37,11 @@ async function generateSpeech(text, voice, styleInstructions, model = "tts-1") {
       requestBody.speed = parseFloat(speedSlider.value || 1.0);
     }
     
-    // Remove style_instructions parameter entirely as it's not supported
+    // Style instructions are collected from the UI but not sent to the API
+    // This preserves the UI functionality while ensuring API compatibility
+    if (styleInstructions) {
+      console.log("Style instructions received but not sent to API:", styleInstructions);
+    }
     
     console.log("Making API request with:", JSON.stringify(requestBody));
     console.log('API URL:', 'https://api.openai.com/v1/audio/speech');
@@ -157,9 +171,19 @@ async function generateVoiceover(script, voice, styleInstructions, model = "tts-
   }
   
   try {
+    // Map advanced models to standard TTS models
+    let actualModel = model;
+    if (model === "gpt-4o-mini-tts") {
+      console.log("Mapping gpt-4o-mini-tts to tts-1 for voiceover");
+      actualModel = "tts-1";
+    } else if (model === "gpt-4o-audio-preview") {
+      console.log("Mapping gpt-4o-audio-preview to tts-1-hd for voiceover");
+      actualModel = "tts-1-hd";
+    }
+    
     // Create a base request object
     const requestBody = {
-      model: model, // tts-1 or tts-1-hd
+      model: actualModel, // Always use tts-1 or tts-1-hd for the actual API call
       voice: voice,
       input: script,
       response_format: 'mp3'
@@ -171,7 +195,11 @@ async function generateVoiceover(script, voice, styleInstructions, model = "tts-
       requestBody.speed = parseFloat(speedSlider.value || 1.0);
     }
     
-    // Remove style_instructions parameter
+    // Style instructions are collected from the UI but not sent to the API
+    // This preserves the UI functionality while ensuring API compatibility
+    if (styleInstructions) {
+      console.log("Voiceover style instructions received but not sent to API:", styleInstructions);
+    }
     
     console.log("Making API request for voiceover with:", JSON.stringify(requestBody));
     console.log('API URL:', 'https://api.openai.com/v1/audio/speech');

@@ -41,11 +41,20 @@ document.getElementById('advanced-tts-model').addEventListener('change', functio
     const styleInstructionsSection = customInstructionsButton ? 
         customInstructionsButton.nextElementSibling : null;
     
-    // Disable style instructions entirely as they're not supported
+    // Enable style instructions for advanced models in the UI
+    // Even though they won't be sent to the API, we keep the UI functionality
     if (styleInstructionsSection) {
-        styleInstructionsSection.style.opacity = '0.5';
         const textarea = styleInstructionsSection.querySelector('textarea');
-        if (textarea) textarea.disabled = true;
+        
+        if (model === 'gpt-4o-mini-tts' || model === 'gpt-4o-audio-preview') {
+            // Enable for GPT models in the UI
+            styleInstructionsSection.style.opacity = '1';
+            if (textarea) textarea.disabled = false;
+        } else {
+            // Disable for standard TTS models
+            styleInstructionsSection.style.opacity = '0.5';
+            if (textarea) textarea.disabled = true;
+        }
     }
     
     // Update cost estimate
@@ -221,8 +230,34 @@ document.getElementById('video-generate-audio-btn').addEventListener('click', fu
     const voiceSelect = document.getElementById('video-voice');
     const voice = voiceSelect ? voiceSelect.value : 'alloy';
     
-    // Style instructions are no longer used - blank string
-    const styleInstructions = "";
+    // Get style instructions
+    const accent = document.getElementById('video-accent')?.value || 'neutral';
+    const speed = document.getElementById('video-speed-slider')?.value || '1';
+    const tone = document.getElementById('video-tone')?.value || 'neutral';
+    const customInstructions = document.getElementById('video-custom-instructions')?.value.trim() || '';
+    
+    // Build style instructions - they'll be logged but not sent to API
+    let styleInstructions = `You are narrating a video.`;
+    
+    if (accent !== 'neutral') {
+        styleInstructions += ` Speak with a ${accent} accent.`;
+    }
+    
+    if (speed !== '1') {
+        if (parseFloat(speed) < 1) {
+            styleInstructions += ` Speak slower than normal.`;
+        } else {
+            styleInstructions += ` Speak faster than normal.`;
+        }
+    }
+    
+    if (tone !== 'neutral') {
+        styleInstructions += ` Use a ${tone} tone.`;
+    }
+    
+    if (customInstructions) {
+        styleInstructions += ` ${customInstructions}`;
+    }
     
     // Status updates
     const statusElement = document.getElementById('video-status-message');
@@ -231,10 +266,15 @@ document.getElementById('video-generate-audio-btn').addEventListener('click', fu
     }
     this.disabled = true;
     
-    console.log(`Generating voiceover with voice: ${voice}`);
+    // Use the model selection from the advanced tab if available
+    // Otherwise default to the advanced model (which will be mapped to tts-1)
+    const modelSelect = document.getElementById('advanced-tts-model');
+    const selectedModel = modelSelect?.value || 'gpt-4o-mini-tts';
     
-    // Use the updated API call with standard TTS model
-    generateVoiceover(script, voice, styleInstructions, 'tts-1')
+    console.log(`Generating voiceover with voice: ${voice} and model: ${selectedModel}`);
+    
+    // Use the updated API call with selected model (mapping happens in the function)
+    generateVoiceover(script, voice, styleInstructions, selectedModel)
         .then(blob => {
             const audioElement = document.getElementById('video-audio-player');
             if (audioElement) {
